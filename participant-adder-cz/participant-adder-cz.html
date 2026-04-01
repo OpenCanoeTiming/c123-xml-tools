@@ -216,6 +216,11 @@
             padding: 20px;
             text-align: center;
         }
+        .btn-remove {
+            background: transparent; border: none; color: #ff453a; cursor: pointer;
+            font-size: 12px; padding: 0 4px; opacity: 0.7; font-family: inherit;
+        }
+        .btn-remove:hover { opacity: 1; }
 
         .hidden { display: none !important; }
 
@@ -454,7 +459,10 @@
                 URL.revokeObjectURL(url);
             }
             changesSinceSave = 0;
+            addedCompetitors = [];
             updateStatusBar();
+            renderAddedLog();
+            renderStartlist();
         } catch (e) {
             showAlert('setupAlerts', `Error saving: ${e.message}`, 'error');
         }
@@ -903,13 +911,49 @@
 
         addedCompetitors.push({ ...data, surname: data.familyName, startOrders, racesCount: checkedRaces.length });
         changesSinceSave++;
+
+        // Clear bib so next suggestion picks up the new max+1
+        document.getElementById('fBib').value = '';
+        document.getElementById('fId').value = '';
+
         updateStatusBar();
         renderAddedLog();
-        renderStartlist();
-        runValidation();
+        updateClassDependentUI();
 
         showAlert('setupAlerts',
             `Added: ${data.familyName} ${data.givenName} (${data.icfId}) \u2192 ${data.classId}, Bib ${data.eventBib}, ${checkedRaces.length} race(s)`, 'info');
+    }
+
+    // =========================================================================
+    // REMOVE ADDED COMPETITOR (before save)
+    // =========================================================================
+    function removeAddedCompetitor(id) {
+        const idx = addedCompetitors.findIndex(a => a.id === id);
+        if (idx === -1) return;
+        const entry = addedCompetitors[idx];
+
+        // Remove Participant XML block: find <Participants>...<Id>{id}</Id>...</Participants>
+        const partRegex = new RegExp(`\\s*<Participants>[\\s\\S]*?<Id>${escapeRegex(id)}</Id>[\\s\\S]*?</Participants>`, 'g');
+        xmlString = xmlString.replace(partRegex, '');
+
+        // Remove Results XML blocks for this Id
+        const resRegex = new RegExp(`\\s*<Results>[\\s\\S]*?<Id>${escapeRegex(id)}</Id>[\\s\\S]*?</Results>`, 'g');
+        xmlString = xmlString.replace(resRegex, '');
+
+        // Re-parse
+        xmlDoc = new DOMParser().parseFromString(xmlString, 'text/xml');
+        extractData();
+
+        addedCompetitors.splice(idx, 1);
+        changesSinceSave = Math.max(0, changesSinceSave - 1);
+
+        updateStatusBar();
+        renderAddedLog();
+        updateClassDependentUI();
+    }
+
+    function escapeRegex(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     // =========================================================================
@@ -942,7 +986,7 @@
 
         // Build table
         let html = '<table class="startlist-table"><thead><tr>';
-        html += '<th>Bib</th><th>Name</th><th>Club</th><th>Year</th>';
+        html += '<th></th><th>Bib</th><th>Name</th><th>Club</th><th>Year</th>';
         for (const race of classRaces) {
             html += `<th class="race-col" title="${race.raceId}">${race.disId}</th>`;
         }
@@ -957,6 +1001,12 @@
         for (const p of sorted) {
             const isNew = addedIds.has(p.id);
             html += `<tr class="${isNew ? 'newly-added' : ''}">`;
+            // Remove button for newly added (before save)
+            if (isNew) {
+                html += `<td><button class="btn-remove" onclick="removeAddedCompetitor('${xmlEscape(p.id)}')" title="Remove">\u2716</button></td>`;
+            } else {
+                html += '<td></td>';
+            }
             html += `<td>${xmlEscape(p.eventBib)}</td>`;
             html += `<td>${xmlEscape(p.familyName)} ${xmlEscape(p.givenName)}</td>`;
             html += `<td>${xmlEscape(p.club)}</td>`;
