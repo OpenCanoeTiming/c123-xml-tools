@@ -18,8 +18,8 @@
         }
 
         * { box-sizing: border-box; }
-        html, body { margin: 0; height: 100vh; overflow: hidden; }
-        body { display: flex; flex-direction: column; }
+        html { height: 100%; margin: 0; }
+        body { margin: 0; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
         /* Header */
         .app-header {
@@ -279,7 +279,7 @@
         </div>
 
         <!-- Main editor -->
-        <div id="editorSection" class="hidden">
+        <div id="editorSection" class="hidden" style="flex:1; min-height:0; display:flex; flex-direction:column;">
             <div class="main-layout">
                 <!-- Left: Competitor + Class + Races -->
                 <div class="panel">
