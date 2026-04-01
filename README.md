@@ -12,6 +12,9 @@ Analyzes penalty correction patterns in race results. Helps identify problematic
 ### [Race Combinator](race-combinator/)
 Combines results from multiple races into unified rankings. Pairs categories from different days or courses, calculates combined standings by sum of rankings and times.
 
+### [Participant Adder CZ](participant-adder-cz/)
+Adds late-registered competitors directly into a C123 XML file. Searches the Czech canoe registry (CSV), auto-fills competitor data, and inserts both Participant and startlist (Results) entries. Saves directly to disk via File System Access API.
+
 ## Usage
 
 All tools are standalone HTML files that run entirely in your browser:

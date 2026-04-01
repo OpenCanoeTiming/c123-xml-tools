@@ -37,6 +37,9 @@ c123-xml-tools/
 │   ├── canoe-race-combine.html           # Standalone HTML tool
 │   ├── docs.md                           # Detailed documentation
 │   └── readme.md                         # Basic info
+├── participant-adder-cz/
+│   ├── participant-adder-cz.html         # Standalone HTML tool
+│   └── readme.md                         # Documentation
 ├── LICENSE
 └── README.md
 ```
@@ -53,6 +56,13 @@ Analyzes quality of entered penalties in C123 XML file.
 ### race-combinator
 Combines multiple race XML files into one.
 - Merging results from multiple rounds/days
+- Standalone HTML - open in browser
+
+### participant-adder-cz
+Adds late-registered competitors to C123 XML.
+- Searches Czech canoe registry (CSV, Windows-1250)
+- Adds to Participants + Results (startlist) in one step
+- Direct file editing via File System Access API
 - Standalone HTML - open in browser
 
 ---
