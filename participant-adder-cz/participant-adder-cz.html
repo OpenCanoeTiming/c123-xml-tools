@@ -376,9 +376,9 @@
     const REGISTRY_DATE_KEY = 'participant-adder-registry-date';
 
     let xmlString = '';
+    let xmlOriginal = '';       // Original XML at time of open (for revert)
     let xmlDoc = null;
     let fileHandle = null;
-    let backupCreated = false;
     let changesSinceSave = 0;
     let fileName = '';
 
@@ -437,7 +437,12 @@
                     input.click();
                 });
             }
-            if (xmlString) processXml();
+            if (xmlString) {
+                xmlOriginal = xmlString;  // Store original for revert
+                addedCompetitors = [];
+                changesSinceSave = 0;
+                processXml();
+            }
         } catch (e) {
             if (e.name !== 'AbortError') showAlert('setupAlerts', `Error opening file: ${e.message}`, 'error');
         }
@@ -446,7 +451,6 @@
     async function saveFile() {
         if (!xmlString) return;
         try {
-            if (!backupCreated && fileHandle) await createBackup();
             if (fileHandle) {
                 const writable = await fileHandle.createWritable();
                 await writable.write(xmlString);
@@ -459,6 +463,7 @@
                 URL.revokeObjectURL(url);
             }
             changesSinceSave = 0;
+            xmlOriginal = xmlString;  // New baseline after save
             addedCompetitors = [];
             updateStatusBar();
             renderAddedLog();
@@ -468,39 +473,14 @@
         }
     }
 
-    async function createBackup() {
-        if (!fileHandle) return;
-        try {
-            const backupHandle = await window.showSaveFilePicker({
-                suggestedName: fileName.replace('.xml', '.backup.xml'),
-                types: [{ description: 'XML backup', accept: { 'text/xml': ['.xml'] } }]
-            });
-            const writable = await backupHandle.createWritable();
-            const origFile = await fileHandle.getFile();
-            await writable.write(await origFile.text());
-            await writable.close();
-            backupCreated = true;
-        } catch (e) {
-            if (e.name !== 'AbortError') {
-                showAlert('setupAlerts', 'Could not create backup. Proceeding without backup.', 'warning');
-            }
-            backupCreated = true;
-        }
-    }
-
-    async function revertFromBackup() {
-        if (!fileHandle) return;
-        if (!confirm('Revert all changes and re-read the file from disk?')) return;
-        try {
-            const file = await fileHandle.getFile();
-            xmlString = await file.text();
-            changesSinceSave = 0;
-            addedCompetitors = [];
-            processXml();
-            showAlert('setupAlerts', 'Reverted to file on disk.', 'info');
-        } catch (e) {
-            showAlert('setupAlerts', `Revert failed: ${e.message}`, 'error');
-        }
+    function revertChanges() {
+        if (!xmlOriginal) return;
+        if (!confirm('Revert all unsaved changes?')) return;
+        xmlString = xmlOriginal;
+        changesSinceSave = 0;
+        addedCompetitors = [];
+        processXml();
+        showAlert('setupAlerts', 'Reverted to last saved state.', 'info');
     }
 
     // =========================================================================
@@ -1068,7 +1048,7 @@
             badge.classList.add('hidden');
             document.getElementById('btnSave').disabled = true;
         }
-        document.getElementById('btnRevert').disabled = !fileHandle;
+        document.getElementById('btnRevert').disabled = changesSinceSave === 0;
     }
 
     function updateRegistryStatus(dateStr) {
@@ -1237,7 +1217,7 @@
     document.getElementById('btnOpenXml').addEventListener('click', openXmlFile);
     document.getElementById('btnLoadRegistry').addEventListener('click', loadRegistryFile);
     document.getElementById('btnSave').addEventListener('click', saveFile);
-    document.getElementById('btnRevert').addEventListener('click', revertFromBackup);
+    document.getElementById('btnRevert').addEventListener('click', revertChanges);
     document.getElementById('btnAdd').addEventListener('click', addCompetitor);
     document.getElementById('btnReset').addEventListener('click', resetForm);
 
