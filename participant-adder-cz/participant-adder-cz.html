@@ -1002,7 +1002,7 @@
 
         // Build table
         let html = '<table class="startlist-table"><thead><tr>';
-        html += '<th></th><th>Bib</th><th>Name</th><th>Club</th><th>Year</th><th>ICFId</th>';
+        html += '<th></th><th>Bib</th><th>Id</th><th>Name</th><th>Club</th><th>Year</th>';
         for (const race of classRaces) {
             html += `<th class="race-col" title="${race.raceId}">${race.disId}</th>`;
         }
@@ -1024,10 +1024,10 @@
                 html += '<td></td>';
             }
             html += `<td>${xmlEscape(p.eventBib)}</td>`;
+            html += `<td>${xmlEscape(p.id)}</td>`;
             html += `<td>${xmlEscape(p.familyName)} ${xmlEscape(p.givenName)}</td>`;
             html += `<td>${xmlEscape(p.club)}</td>`;
             html += `<td>${xmlEscape(p.year)}</td>`;
-            html += `<td>${xmlEscape(p.icfId || '')}</td>`;
 
             for (const race of classRaces) {
                 const inRace = results.some(r => r.raceId === race.raceId && r.id === p.id);
