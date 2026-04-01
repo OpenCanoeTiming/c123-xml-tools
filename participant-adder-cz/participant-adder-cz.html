@@ -946,16 +946,22 @@
         if (idx === -1) return;
         const entry = addedCompetitors[idx];
 
-        // Remove Participant XML block: find <Participants>...<Id>{id}</Id>...</Participants>
-        const partRegex = new RegExp(`\\s*<Participants>[\\s\\S]*?<Id>${escapeRegex(id)}</Id>[\\s\\S]*?</Participants>`, 'g');
-        xmlString = xmlString.replace(partRegex, '');
+        // Remove Participant element with matching Id (DOM)
+        for (const p of [...xmlDoc.getElementsByTagNameNS(NS, 'Participants')]) {
+            if (getTextContent(p, 'Id') === id) {
+                p.parentNode.removeChild(p);
+            }
+        }
 
-        // Remove Results XML blocks for this Id
-        const resRegex = new RegExp(`\\s*<Results>[\\s\\S]*?<Id>${escapeRegex(id)}</Id>[\\s\\S]*?</Results>`, 'g');
-        xmlString = xmlString.replace(resRegex, '');
+        // Remove Results elements with matching Id (DOM)
+        for (const r of [...xmlDoc.getElementsByTagNameNS(NS, 'Results')]) {
+            if (getTextContent(r, 'Id') === id) {
+                r.parentNode.removeChild(r);
+            }
+        }
 
-        // Re-parse
-        xmlDoc = new DOMParser().parseFromString(xmlString, 'text/xml');
+        // Serialize back
+        xmlString = new XMLSerializer().serializeToString(xmlDoc);
         extractData();
 
         addedCompetitors.splice(idx, 1);
@@ -964,10 +970,6 @@
         updateStatusBar();
         renderAddedLog();
         updateClassDependentUI();
-    }
-
-    function escapeRegex(str) {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     // =========================================================================
@@ -1000,7 +1002,7 @@
 
         // Build table
         let html = '<table class="startlist-table"><thead><tr>';
-        html += '<th></th><th>Bib</th><th>Name</th><th>Club</th><th>Year</th>';
+        html += '<th></th><th>Bib</th><th>Name</th><th>Club</th><th>Year</th><th>ICFId</th>';
         for (const race of classRaces) {
             html += `<th class="race-col" title="${race.raceId}">${race.disId}</th>`;
         }
@@ -1025,6 +1027,7 @@
             html += `<td>${xmlEscape(p.familyName)} ${xmlEscape(p.givenName)}</td>`;
             html += `<td>${xmlEscape(p.club)}</td>`;
             html += `<td>${xmlEscape(p.year)}</td>`;
+            html += `<td>${xmlEscape(p.icfId || '')}</td>`;
 
             for (const race of classRaces) {
                 const inRace = results.some(r => r.raceId === race.raceId && r.id === p.id);
