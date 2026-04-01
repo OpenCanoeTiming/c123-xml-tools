@@ -18,6 +18,8 @@
         }
 
         * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100vh; overflow: hidden; }
+        body { display: flex; flex-direction: column; }
 
         /* Header */
         .app-header {
@@ -75,14 +77,24 @@
         .setup-section { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
         .fs-fallback-note { font-size: 12px; color: var(--color-text-muted, #666); font-style: italic; }
 
+        /* Main content wrapper */
+        .main-content {
+            flex: 1;
+            padding: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
         /* Main layout: left form + right startlist */
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            height: calc(100vh - 140px);
+            flex: 1;
+            min-height: 0;  /* Allow grid to shrink below content size */
         }
-        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; height: auto; } }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } }
 
         .panel {
             background: var(--color-bg-surface, #1a1a1a);
@@ -90,6 +102,7 @@
             border-radius: 8px;
             padding: 12px;
             overflow-y: auto;
+            min-height: 0;  /* Allow panel to shrink in flex/grid */
         }
         .panel h3 {
             font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
@@ -253,7 +266,7 @@
         </div>
     </div>
 
-    <div style="padding: 12px;">
+    <div class="main-content">
         <!-- Setup -->
         <div id="setupSection">
             <div class="setup-section">
