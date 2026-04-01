@@ -29,11 +29,13 @@ jobs:
         run: |
           mkdir -p _site/penalties-quality-analyzer
           mkdir -p _site/race-combinator
+          mkdir -p _site/participant-adder-cz
           # Copy index
           cp index.html _site/
           # Copy tools
           cp penalties-quality-analyzer/penalties-quality-analyzer.html _site/penalties-quality-analyzer/
           cp race-combinator/canoe-race-combine.html _site/race-combinator/
+          cp participant-adder-cz/participant-adder-cz.html _site/participant-adder-cz/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
