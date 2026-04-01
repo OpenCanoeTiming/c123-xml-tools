@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Participant Adder CZ</title>
 
-    <!-- Google Fonts with system fallback -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Timing Design System from GitHub Pages -->
     <link rel="stylesheet" href="https://opencanoetiming.github.io/timing-design-system/dist/timing.min.css">
 
     <style>
@@ -20,487 +17,212 @@
             --adder-accent-glow: rgba(0, 136, 255, 0.4);
         }
 
-        /* App Header */
+        * { box-sizing: border-box; }
+
+        /* Header */
         .app-header {
             position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 12px 16px;
-            padding-left: calc(16px + 4px + 12px);
+            padding: 12px 16px 12px calc(16px + 4px + 12px);
             background-color: var(--color-bg-surface, #141414);
             min-height: 56px;
-            margin-bottom: 0;
         }
-
         .app-header::before {
             content: '';
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
+            left: 0; top: 0; bottom: 0;
             width: 4px;
             background: var(--adder-accent);
             box-shadow: 0 0 20px var(--adder-accent-glow);
         }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--color-text-primary, #ffffff);
-            margin: 0;
-        }
-
-        .header-status {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-file-info {
-            font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-            font-size: 13px;
-            color: var(--color-text-secondary, #999999);
-        }
-
+        .header-brand { display: flex; align-items: center; gap: 12px; }
+        .header-title { font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary, #fff); margin: 0; }
+        .header-status { display: flex; align-items: center; gap: 12px; }
+        .header-file-info { font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace; font-size: 13px; color: var(--color-text-secondary, #999); }
         .badge-tool {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #ffffff;
-            background-color: var(--adder-accent);
+            display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+            color: #fff; background-color: var(--adder-accent);
         }
 
         /* Status bar */
         .status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 16px;
-            background: var(--color-bg-surface, #141414);
-            border-bottom: 1px solid var(--color-border, #333);
-            font-size: 13px;
-            min-height: 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 6px 16px; background: var(--color-bg-surface, #141414);
+            border-bottom: 1px solid var(--color-border, #333); font-size: 13px;
         }
+        .status-bar-left { display: flex; align-items: center; gap: 16px; color: var(--color-text-secondary, #999); }
+        .status-bar-right { display: flex; align-items: center; gap: 8px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .status-badge.modified { background: rgba(255, 149, 0, 0.2); color: #ff9500; }
+        .status-badge.saved { background: rgba(48, 209, 88, 0.2); color: #30d158; }
+        .status-badge.registry { background: rgba(0, 136, 255, 0.15); color: var(--adder-accent); }
+        .status-badge.registry-stale { background: rgba(255, 149, 0, 0.2); color: #ff9500; }
 
-        .status-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: var(--color-text-secondary, #999);
-        }
+        /* Buttons */
+        .btn-save { background: #30d158; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-revert { background: transparent; color: #ff453a; border: 1px solid #ff453a; padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit; }
+        .btn-revert:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-add { background: var(--adder-accent); color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .btn-add:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-add:not(:disabled):hover { filter: brightness(1.1); }
 
-        .status-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        /* Setup */
+        .setup-section { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+        .fs-fallback-note { font-size: 12px; color: var(--color-text-muted, #666); font-style: italic; }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-badge.modified {
-            background: rgba(255, 149, 0, 0.2);
-            color: #ff9500;
-        }
-
-        .status-badge.saved {
-            background: rgba(48, 209, 88, 0.2);
-            color: #30d158;
-        }
-
-        .status-badge.registry {
-            background: rgba(0, 136, 255, 0.15);
-            color: var(--adder-accent);
-        }
-
-        .status-badge.registry-stale {
-            background: rgba(255, 149, 0, 0.2);
-            color: #ff9500;
-        }
-
-        /* Setup section */
-        .setup-section {
-            display: flex;
-            gap: 16px;
-            margin-bottom: var(--space-4, 16px);
-        }
-
-        .setup-section .btn {
-            white-space: nowrap;
-        }
-
-        /* Main layout */
+        /* Main layout: left form + right startlist */
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-4, 16px);
+            grid-template-columns: minmax(340px, 400px) 1fr;
+            gap: 12px;
+            height: calc(100vh - 140px);
         }
-
-        @media (max-width: 900px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; height: auto; } }
 
         .panel {
             background: var(--color-bg-surface, #1a1a1a);
             border: 1px solid var(--color-border, #333);
-            border-radius: var(--radius-lg, 8px);
-            padding: var(--space-4, 16px);
+            border-radius: 8px;
+            padding: 12px;
+            overflow-y: auto;
         }
-
         .panel h3 {
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--color-text-secondary, #999);
-            margin: 0 0 12px 0;
+            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--color-text-secondary, #999); margin: 0 0 8px 0;
         }
 
         /* Search */
         .search-input {
-            width: 100%;
-            padding: 8px 12px;
-            background: var(--color-bg-body, #0a0a0a);
-            border: 1px solid var(--color-border, #333);
-            border-radius: var(--radius-md, 6px);
-            color: var(--color-text-primary, #fff);
-            font-size: 14px;
-            font-family: inherit;
+            width: 100%; padding: 8px 10px;
+            background: var(--color-bg-body, #0a0a0a); border: 1px solid var(--color-border, #333);
+            border-radius: 6px; color: var(--color-text-primary, #fff); font-size: 14px; font-family: inherit;
         }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--adder-accent);
-            box-shadow: 0 0 0 2px var(--adder-accent-glow);
-        }
-
-        .search-results {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 8px;
-            border: 1px solid var(--color-border, #333);
-            border-radius: var(--radius-md, 6px);
-        }
-
-        .search-results:empty {
-            display: none;
-        }
-
+        .search-input:focus { outline: none; border-color: var(--adder-accent); box-shadow: 0 0 0 2px var(--adder-accent-glow); }
+        .search-results { max-height: 180px; overflow-y: auto; margin-top: 4px; border: 1px solid var(--color-border, #333); border-radius: 6px; }
+        .search-results:empty { display: none; }
         .search-result-item {
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--color-border, #333);
+            padding: 5px 10px; cursor: pointer; font-size: 13px;
+            display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border, #333);
         }
-
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-result-item:hover {
-            background: rgba(0, 136, 255, 0.1);
-        }
-
-        .search-result-item .name {
-            font-weight: 500;
-        }
-
-        .search-result-item .meta {
-            color: var(--color-text-muted, #666);
-            font-size: 12px;
-        }
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: rgba(0, 136, 255, 0.1); }
+        .search-result-item .name { font-weight: 500; }
+        .search-result-item .meta { color: var(--color-text-muted, #666); font-size: 12px; }
 
         /* Form */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            color: var(--color-text-muted, #666);
-        }
-
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+        .form-group { display: flex; flex-direction: column; gap: 1px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-text-muted, #666); }
         .form-group input, .form-group select {
-            padding: 6px 8px;
-            background: var(--color-bg-body, #0a0a0a);
-            border: 1px solid var(--color-border, #333);
-            border-radius: var(--radius-md, 6px);
-            color: var(--color-text-primary, #fff);
-            font-size: 13px;
-            font-family: inherit;
+            padding: 5px 7px; background: var(--color-bg-body, #0a0a0a); border: 1px solid var(--color-border, #333);
+            border-radius: 5px; color: var(--color-text-primary, #fff); font-size: 13px; font-family: inherit;
         }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--adder-accent); }
+        .form-group input.error { border-color: #ff453a; }
+        .form-group input.warning { border-color: #ff9500; }
+        .form-group .hint { font-size: 10px; color: var(--color-text-muted, #666); }
+        .form-group .hint.error { color: #ff453a; }
+        .form-group .hint.warning { color: #ff9500; }
 
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--adder-accent);
-        }
-
-        .form-group input.error {
-            border-color: #ff453a;
-        }
-
-        .form-group input.warning {
-            border-color: #ff9500;
-        }
-
-        .form-group .hint {
-            font-size: 11px;
-            color: var(--color-text-muted, #666);
-            margin-top: 1px;
-        }
-
-        .form-group .hint.error {
-            color: #ff453a;
-        }
-
-        .form-group .hint.warning {
-            color: #ff9500;
-        }
+        /* Separator */
+        .section-sep { border: none; border-top: 1px solid var(--color-border, #333); margin: 10px 0; }
 
         /* Race checkboxes */
-        .race-list {
-            list-style: none;
-            padding: 0;
-            margin: 8px 0 0 0;
-        }
-
-        .race-list li {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 4px 0;
-            font-size: 13px;
-        }
-
-        .race-list li.race-has-results {
-            opacity: 0.6;
-        }
-
-        .race-status-badge {
-            font-size: 10px;
-            padding: 1px 5px;
-            border-radius: 3px;
-            font-weight: 500;
-        }
-
+        .race-list { list-style: none; padding: 0; margin: 4px 0 0 0; }
+        .race-list li { display: flex; align-items: center; gap: 6px; padding: 3px 0; font-size: 12px; }
+        .race-list li.race-has-results { opacity: 0.6; }
+        .race-status-badge { font-size: 10px; padding: 1px 5px; border-radius: 3px; font-weight: 500; }
         .race-status-0 { background: rgba(0, 136, 255, 0.2); color: var(--adder-accent); }
         .race-status-1 { background: rgba(48, 209, 88, 0.2); color: #30d158; }
         .race-status-3 { background: rgba(255, 149, 0, 0.2); color: #ff9500; }
         .race-status-4 { background: rgba(255, 149, 0, 0.3); color: #ff9500; }
         .race-status-5 { background: rgba(255, 59, 48, 0.2); color: #ff453a; }
 
-        /* Validation messages */
-        .validation-messages {
-            margin-top: 12px;
-        }
+        /* Validation */
+        .validation-messages { margin-top: 8px; }
+        .validation-msg { padding: 3px 8px; border-radius: 4px; font-size: 12px; margin-bottom: 3px; }
+        .validation-msg.error { background: rgba(255, 59, 48, 0.15); color: #ff453a; }
+        .validation-msg.warning { background: rgba(255, 149, 0, 0.15); color: #ff9500; }
 
-        .validation-msg {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
+        /* Action bar */
+        .action-bar { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
 
-        .validation-msg.error {
-            background: rgba(255, 59, 48, 0.15);
-            color: #ff453a;
-        }
+        /* Added log */
+        .added-log { margin-top: 8px; font-size: 12px; }
+        .added-log-item { padding: 3px 8px; background: rgba(48, 209, 88, 0.1); border-radius: 4px; margin-bottom: 2px; display: flex; justify-content: space-between; }
 
-        .validation-msg.warning {
-            background: rgba(255, 149, 0, 0.15);
-            color: #ff9500;
-        }
-
-        /* Action buttons */
-        .action-bar {
-            margin-top: var(--space-4, 16px);
+        /* Right panel: startlist table */
+        .startlist-panel {
             display: flex;
-            gap: 8px;
-            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
         }
-
-        .btn-add {
-            background: var(--adder-accent);
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: var(--radius-md, 6px);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
+        .startlist-panel .panel-header {
+            flex-shrink: 0;
+            padding-bottom: 8px;
         }
-
-        .btn-add:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
+        .startlist-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
         }
-
-        .btn-add:not(:disabled):hover {
-            filter: brightness(1.1);
-        }
-
-        .btn-save {
-            background: #30d158;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: var(--radius-md, 6px);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .btn-save:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .btn-revert {
-            background: transparent;
-            color: #ff453a;
-            border: 1px solid #ff453a;
-            padding: 8px 16px;
-            border-radius: var(--radius-md, 6px);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .btn-revert:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-
-        /* Added competitors log */
-        .added-log {
-            margin-top: 12px;
+        .startlist-table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 12px;
         }
-
-        .added-log-item {
-            padding: 4px 8px;
-            background: rgba(48, 209, 88, 0.1);
-            border-radius: 4px;
-            margin-bottom: 2px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Summary info */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .summary-item {
-            text-align: center;
-            padding: 8px;
-            background: var(--color-bg-body, #0a0a0a);
-            border-radius: var(--radius-md, 6px);
-        }
-
-        .summary-item .value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-text-primary, #fff);
-        }
-
-        .summary-item .label {
-            font-size: 11px;
-            color: var(--color-text-muted, #666);
+        .startlist-table th {
+            position: sticky;
+            top: 0;
+            background: var(--color-bg-surface, #1a1a1a);
+            text-align: left;
+            padding: 4px 6px;
+            font-size: 10px;
+            font-weight: 600;
             text-transform: uppercase;
+            color: var(--color-text-secondary, #999);
+            border-bottom: 1px solid var(--color-border, #333);
+            white-space: nowrap;
+        }
+        .startlist-table th.race-col {
+            text-align: center;
+            min-width: 50px;
+        }
+        .startlist-table td {
+            padding: 3px 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            white-space: nowrap;
+        }
+        .startlist-table tr:hover { background: rgba(255, 255, 255, 0.03); }
+        .startlist-table .race-check { text-align: center; color: #30d158; }
+        .startlist-table .race-nocheck { text-align: center; color: var(--color-text-muted, #444); }
+        .startlist-table tr.newly-added {
+            background: rgba(0, 136, 255, 0.12);
+            font-weight: 500;
+        }
+        .startlist-table tr.newly-added td:first-child::before {
+            content: '\u2605 ';
+            color: var(--adder-accent);
+        }
+        .startlist-empty {
+            color: var(--color-text-muted, #666);
+            font-size: 13px;
+            padding: 20px;
+            text-align: center;
         }
 
-        /* Hidden */
         .hidden { display: none !important; }
 
-        /* Alert */
-        .alert-info {
-            background: rgba(0, 136, 255, 0.1);
-            border: 1px solid rgba(0, 136, 255, 0.3);
-            color: var(--adder-accent);
-            padding: 10px 14px;
-            border-radius: var(--radius-md, 6px);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .alert-warning {
-            background: rgba(255, 149, 0, 0.1);
-            border: 1px solid rgba(255, 149, 0, 0.3);
-            color: #ff9500;
-            padding: 10px 14px;
-            border-radius: var(--radius-md, 6px);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .alert-error {
-            background: rgba(255, 59, 48, 0.1);
-            border: 1px solid rgba(255, 59, 48, 0.3);
-            color: #ff453a;
-            padding: 10px 14px;
-            border-radius: var(--radius-md, 6px);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        /* File System API not supported */
-        .fs-fallback-note {
-            font-size: 12px;
-            color: var(--color-text-muted, #666);
-            font-style: italic;
-        }
+        /* Alerts */
+        .alert-info { background: rgba(0, 136, 255, 0.1); border: 1px solid rgba(0, 136, 255, 0.3); color: var(--adder-accent); padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
+        .alert-warning { background: rgba(255, 149, 0, 0.1); border: 1px solid rgba(255, 149, 0, 0.3); color: #ff9500; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
+        .alert-error { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff453a; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -520,58 +242,34 @@
             <span id="registryStatus"></span>
         </div>
         <div class="status-bar-right">
-            <span id="changesBadge" class="status-badge modified hidden">0 changes</span>
-            <button class="btn-save btn-sm" id="btnSave" disabled>Save</button>
-            <button class="btn-revert btn-sm" id="btnRevert" disabled>Revert</button>
+            <span id="changesBadge" class="status-badge modified hidden"></span>
+            <button class="btn-save" id="btnSave" disabled>Save</button>
+            <button class="btn-revert" id="btnRevert" disabled>Revert</button>
         </div>
     </div>
 
-    <div class="container-fluid" style="padding: 16px;">
-
-        <!-- Setup: Open XML + Load Registry -->
+    <div style="padding: 12px;">
+        <!-- Setup -->
         <div id="setupSection">
             <div class="setup-section">
                 <button class="btn btn-primary" id="btnOpenXml">Open XML file</button>
                 <button class="btn btn-secondary" id="btnLoadRegistry">Load registry CSV</button>
                 <span id="fsApiNote" class="fs-fallback-note"></span>
             </div>
-
             <div id="setupAlerts"></div>
-
-            <!-- XML Summary -->
-            <div id="xmlSummary" class="hidden">
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="value" id="sumParticipants">0</div>
-                        <div class="label">Participants</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="value" id="sumClasses">0</div>
-                        <div class="label">Classes</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="value" id="sumRaces">0</div>
-                        <div class="label">Races</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="value" id="sumResults">0</div>
-                        <div class="label">Results</div>
-                    </div>
-                </div>
-            </div>
         </div>
 
-        <!-- Main editor (hidden until XML loaded) -->
+        <!-- Main editor -->
         <div id="editorSection" class="hidden">
             <div class="main-layout">
-                <!-- Left panel: Search + Competitor form -->
+                <!-- Left: Competitor + Class + Races -->
                 <div class="panel">
                     <h3>Competitor</h3>
                     <input type="text" class="search-input" id="searchInput"
                            placeholder="Search: name, surname, or RGC..." autocomplete="off">
                     <div class="search-results" id="searchResults"></div>
 
-                    <div class="form-grid" id="competitorForm">
+                    <div class="form-grid">
                         <div class="form-group">
                             <label>RGC (ICFId)</label>
                             <input type="text" id="fRgc" placeholder="e.g. 60070">
@@ -599,30 +297,19 @@
                                 <option value="f">Female</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Ranking</label>
-                            <input type="text" id="fRanking" placeholder="e.g. 3+">
-                        </div>
-                        <div class="form-group">
-                            <label>Category (auto)</label>
-                            <input type="text" id="fCatId" placeholder="auto-calculated" readonly>
-                            <span class="hint" id="fCatHint"></span>
-                        </div>
                     </div>
-                </div>
 
-                <!-- Right panel: Class, Bib, Races -->
-                <div class="panel">
+                    <hr class="section-sep">
                     <h3>Class &amp; Startlist</h3>
 
                     <div class="form-group">
                         <label>Class</label>
-                        <select id="fClass" style="width: 100%; padding: 8px;">
+                        <select id="fClass" style="width: 100%; padding: 7px;">
                             <option value="">-- select class --</option>
                         </select>
                     </div>
 
-                    <div class="form-grid" style="margin-top: 8px;">
+                    <div class="form-grid" style="margin-top: 6px;">
                         <div class="form-group">
                             <label>EventBib</label>
                             <input type="text" id="fBib" placeholder="bib number">
@@ -633,9 +320,19 @@
                             <input type="text" id="fId" placeholder="auto-generated">
                             <span class="hint" id="fIdHint"></span>
                         </div>
+                        <div class="form-group">
+                            <label>Ranking</label>
+                            <input type="text" id="fRanking" placeholder="e.g. 3+">
+                        </div>
+                        <div class="form-group">
+                            <label>Category (auto)</label>
+                            <input type="text" id="fCatId" placeholder="auto-calculated" readonly>
+                            <span class="hint" id="fCatHint"></span>
+                        </div>
                     </div>
 
-                    <h3 style="margin-top: 16px;">Races</h3>
+                    <hr class="section-sep">
+                    <h3>Races</h3>
                     <ul class="race-list" id="raceList">
                         <li style="color: var(--color-text-muted);">Select a class first</li>
                     </ul>
@@ -643,14 +340,23 @@
                     <!-- Validation -->
                     <div class="validation-messages" id="validationMessages"></div>
 
-                    <!-- Action -->
+                    <!-- Actions -->
                     <div class="action-bar">
                         <button class="btn-add" id="btnAdd" disabled>ADD Competitor</button>
-                        <button class="btn btn-secondary btn-sm" id="btnReset">New search</button>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" id="btnReset">New search</button>
                     </div>
 
-                    <!-- Added log -->
                     <div class="added-log" id="addedLog"></div>
+                </div>
+
+                <!-- Right: Startlist for current class -->
+                <div class="panel startlist-panel">
+                    <div class="panel-header">
+                        <h3>Startlist — <span id="startlistClassName">select class</span></h3>
+                    </div>
+                    <div class="startlist-scroll" id="startlistScroll">
+                        <div class="startlist-empty">Select a class to view startlist</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -664,60 +370,39 @@
     const REGISTRY_KEY = 'participant-adder-registry';
     const REGISTRY_DATE_KEY = 'participant-adder-registry-date';
 
-    let xmlString = '';           // Original XML text (modified in place)
-    let xmlDoc = null;            // Parsed DOM (read-only)
-    let fileHandle = null;        // File System Access API handle
+    let xmlString = '';
+    let xmlDoc = null;
+    let fileHandle = null;
     let backupCreated = false;
     let changesSinceSave = 0;
     let fileName = '';
 
-    // Parsed data
-    let participants = [];        // [{id, classId, eventBib, icfId, familyName, givenName, club, year, catId}]
-    let classes = [];             // [{classId, className, longTitle, categories: [{catId, category, firstYear, lastYear}]}]
-    let schedule = [];            // [{raceId, classId, disId, raceStatus, startTime, firstBib, startInterval}]
-    let results = [];             // [{raceId, id, startOrder, bib}]
-    let events = {};              // {bibHandling, startListsLocked, eventName}
+    let participants = [];
+    let classes = [];
+    let schedule = [];
+    let results = [];
+    let events = {};
+    let registry = [];
+    let addedCompetitors = [];  // {id, classId, eventBib, icfId, familyName, givenName, club, year, catId, ranking, startOrders, racesCount}
 
-    // Registry
-    let registry = [];            // [{rgc, surname, givenName, year, gender, vk, ks, c1s, c2s, kw, c1w, c2w, clubCode, clubName}]
-
-    // Added competitors (in current session)
-    let addedCompetitors = [];
-
-    // File System Access API support
     const hasFileSystemAccess = ('showOpenFilePicker' in window);
+
+    const RACE_STATUS_LABELS = { '0': 'Scheduled', '1': 'StartList', '3': 'InProgress', '4': 'Unofficial', '5': 'Official', '7': 'Cancelled' };
 
     // =========================================================================
     // UTILITIES
     // =========================================================================
     function xmlEscape(str) {
         if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function getTextContent(parent, tagName) {
-        const el = parent.getElementsByTagNameNS(NS, tagName)[0]
-               || parent.getElementsByTagName(tagName)[0];
+        const el = parent.getElementsByTagNameNS(NS, tagName)[0] || parent.getElementsByTagName(tagName)[0];
         return el ? (el.textContent || '').trim() : '';
     }
 
-    const RACE_STATUS_LABELS = {
-        '0': 'Scheduled',
-        '1': 'StartList',
-        '3': 'InProgress',
-        '4': 'Unofficial',
-        '5': 'Official',
-        '7': 'Cancelled'
-    };
-
-    function raceHasResults(status) {
-        const s = parseInt(status, 10);
-        return s >= 3;
-    }
+    function raceHasResults(status) { return parseInt(status, 10) >= 3; }
 
     // =========================================================================
     // FILE SYSTEM ACCESS API
@@ -733,53 +418,41 @@
                 fileName = file.name;
                 xmlString = await file.text();
             } else {
-                // Fallback: file input
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = '.xml';
-                return new Promise((resolve) => {
+                await new Promise((resolve) => {
                     input.onchange = async () => {
                         const file = input.files[0];
-                        if (!file) return;
+                        if (!file) return resolve();
                         fileName = file.name;
                         xmlString = await file.text();
                         resolve();
                     };
                     input.click();
-                }).then(() => processXml());
+                });
             }
-            processXml();
+            if (xmlString) processXml();
         } catch (e) {
-            if (e.name !== 'AbortError') {
-                showAlert('setupAlerts', `Error opening file: ${e.message}`, 'error');
-            }
+            if (e.name !== 'AbortError') showAlert('setupAlerts', `Error opening file: ${e.message}`, 'error');
         }
     }
 
     async function saveFile() {
         if (!xmlString) return;
-
         try {
-            // Auto-backup before first save
-            if (!backupCreated && fileHandle) {
-                await createBackup();
-            }
-
+            if (!backupCreated && fileHandle) await createBackup();
             if (fileHandle) {
                 const writable = await fileHandle.createWritable();
                 await writable.write(xmlString);
                 await writable.close();
             } else {
-                // Fallback: download
                 const blob = new Blob([xmlString], { type: 'text/xml' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName || 'modified.xml';
-                a.click();
+                a.href = url; a.download = fileName || 'modified.xml'; a.click();
                 URL.revokeObjectURL(url);
             }
-
             changesSinceSave = 0;
             updateStatusBar();
         } catch (e) {
@@ -790,95 +463,56 @@
     async function createBackup() {
         if (!fileHandle) return;
         try {
-            // Get the directory of the current file
-            // We need to use showSaveFilePicker for the backup
-            const backupName = fileName.replace('.xml', '.backup.xml');
-            const dirHandle = await fileHandle.getParent?.() || null;
-
-            if (dirHandle) {
-                const backupHandle = await dirHandle.getFileHandle(backupName, { create: true });
-                const writable = await backupHandle.createWritable();
-                // Write the ORIGINAL content (before any modifications in this session)
-                // We already have modifications in xmlString, so read original from file
-                const origFile = await fileHandle.getFile();
-                const origContent = await origFile.text();
-                await writable.write(origContent);
-                await writable.close();
-                backupCreated = true;
-            }
+            const backupHandle = await window.showSaveFilePicker({
+                suggestedName: fileName.replace('.xml', '.backup.xml'),
+                types: [{ description: 'XML backup', accept: { 'text/xml': ['.xml'] } }]
+            });
+            const writable = await backupHandle.createWritable();
+            const origFile = await fileHandle.getFile();
+            await writable.write(await origFile.text());
+            await writable.close();
+            backupCreated = true;
         } catch (e) {
-            // If backup creation fails (e.g., no directory access), save anyway but warn
-            console.warn('Backup creation failed:', e);
-            // Try alternative: save via showSaveFilePicker
-            try {
-                const backupHandle = await window.showSaveFilePicker({
-                    suggestedName: fileName.replace('.xml', '.backup.xml'),
-                    types: [{ description: 'XML files', accept: { 'text/xml': ['.xml'] } }]
-                });
-                const writable = await backupHandle.createWritable();
-                const origFile = await fileHandle.getFile();
-                await writable.write(await origFile.text());
-                await writable.close();
-                backupCreated = true;
-            } catch (e2) {
-                if (e2.name !== 'AbortError') {
-                    showAlert('setupAlerts', 'Could not create backup. Proceeding without backup.', 'warning');
-                }
-                backupCreated = true; // Don't ask again
+            if (e.name !== 'AbortError') {
+                showAlert('setupAlerts', 'Could not create backup. Proceeding without backup.', 'warning');
             }
+            backupCreated = true;
         }
     }
 
     async function revertFromBackup() {
         if (!fileHandle) return;
-        if (!confirm('Revert all changes and restore from backup? This cannot be undone.')) return;
-
+        if (!confirm('Revert all changes and re-read the file from disk?')) return;
         try {
-            const backupName = fileName.replace('.xml', '.backup.xml');
-            const dirHandle = await fileHandle.getParent?.() || null;
-            if (dirHandle) {
-                const backupHandle = await dirHandle.getFileHandle(backupName);
-                const backupFile = await backupHandle.getFile();
-                xmlString = await backupFile.text();
-            } else {
-                // Re-read original file (may have been saved already)
-                showAlert('setupAlerts', 'Cannot locate backup. Re-reading current file.', 'warning');
-                const file = await fileHandle.getFile();
-                xmlString = await file.text();
-            }
-
+            const file = await fileHandle.getFile();
+            xmlString = await file.text();
             changesSinceSave = 0;
             addedCompetitors = [];
             processXml();
+            showAlert('setupAlerts', 'Reverted to file on disk.', 'info');
         } catch (e) {
             showAlert('setupAlerts', `Revert failed: ${e.message}`, 'error');
         }
     }
 
     // =========================================================================
-    // XML PARSING (READ-ONLY)
+    // XML PARSING
     // =========================================================================
     function processXml() {
         const parser = new DOMParser();
         xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-
-        const parseError = xmlDoc.querySelector('parsererror');
-        if (parseError) {
-            showAlert('setupAlerts', 'XML parse error: ' + parseError.textContent, 'error');
+        if (xmlDoc.querySelector('parsererror')) {
+            showAlert('setupAlerts', 'XML parse error', 'error');
             return;
         }
-
         extractData();
         updateUI();
     }
 
     function extractData() {
-        // Participants
         participants = [];
-        const partNodes = xmlDoc.getElementsByTagNameNS(NS, 'Participants');
-        for (const p of partNodes) {
-            const isTeam = getTextContent(p, 'IsTeam');
-            if (isTeam === 'true') continue; // Skip teams for now
+        for (const p of xmlDoc.getElementsByTagNameNS(NS, 'Participants')) {
+            if (getTextContent(p, 'IsTeam') === 'true') continue;
             participants.push({
                 id: getTextContent(p, 'Id'),
                 classId: getTextContent(p, 'ClassId'),
@@ -892,31 +526,27 @@
             });
         }
 
-        // Classes + Categories
         classes = [];
-        const classNodes = xmlDoc.getElementsByTagNameNS(NS, 'Classes');
-        for (const c of classNodes) {
-            const classId = getTextContent(c, 'ClassId');
-            const className = getTextContent(c, 'Class');
-            const longTitle = getTextContent(c, 'LongTitle');
+        for (const c of xmlDoc.getElementsByTagNameNS(NS, 'Classes')) {
             const cats = [];
-            const catNodes = c.getElementsByTagNameNS(NS, 'Categories');
-            for (const cat of catNodes) {
+            for (const cat of c.getElementsByTagNameNS(NS, 'Categories')) {
                 cats.push({
                     catId: getTextContent(cat, 'CatId'),
-                    classId: getTextContent(cat, 'ClassId'),
                     category: getTextContent(cat, 'Category'),
                     firstYear: parseInt(getTextContent(cat, 'FirstYear')) || 0,
                     lastYear: parseInt(getTextContent(cat, 'LastYear')) || 0,
                 });
             }
-            classes.push({ classId, className, longTitle, categories: cats });
+            classes.push({
+                classId: getTextContent(c, 'ClassId'),
+                className: getTextContent(c, 'Class'),
+                longTitle: getTextContent(c, 'LongTitle'),
+                categories: cats,
+            });
         }
 
-        // Schedule
         schedule = [];
-        const schedNodes = xmlDoc.getElementsByTagNameNS(NS, 'Schedule');
-        for (const s of schedNodes) {
+        for (const s of xmlDoc.getElementsByTagNameNS(NS, 'Schedule')) {
             schedule.push({
                 raceId: getTextContent(s, 'RaceId'),
                 classId: getTextContent(s, 'ClassId'),
@@ -924,15 +554,11 @@
                 raceStatus: getTextContent(s, 'RaceStatus'),
                 startTime: getTextContent(s, 'StartTime') || getTextContent(s, 'Time'),
                 firstBib: getTextContent(s, 'FirstBib'),
-                startInterval: getTextContent(s, 'StartInterval'),
-                customTitle: getTextContent(s, 'CustomTitle'),
             });
         }
 
-        // Results
         results = [];
-        const resNodes = xmlDoc.getElementsByTagNameNS(NS, 'Results');
-        for (const r of resNodes) {
+        for (const r of xmlDoc.getElementsByTagNameNS(NS, 'Results')) {
             results.push({
                 raceId: getTextContent(r, 'RaceId'),
                 id: getTextContent(r, 'Id'),
@@ -941,7 +567,6 @@
             });
         }
 
-        // Events
         const evNodes = xmlDoc.getElementsByTagNameNS(NS, 'Events');
         if (evNodes.length > 0) {
             const ev = evNodes[0];
@@ -960,32 +585,20 @@
         try {
             const data = localStorage.getItem(REGISTRY_KEY);
             const date = localStorage.getItem(REGISTRY_DATE_KEY);
-            if (data) {
-                registry = JSON.parse(data);
-                updateRegistryStatus(date);
-                return true;
-            }
-        } catch (e) {
-            console.warn('Failed to load registry from localStorage:', e);
-        }
+            if (data) { registry = JSON.parse(data); updateRegistryStatus(date); return true; }
+        } catch (e) { console.warn('Registry load failed:', e); }
         return false;
     }
 
     async function loadRegistryFile() {
         const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.csv,.txt';
-
+        input.type = 'file'; input.accept = '.csv,.txt';
         return new Promise((resolve) => {
             input.onchange = () => {
                 const file = input.files[0];
                 if (!file) return resolve();
-
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    parseRegistryCsv(e.target.result);
-                    resolve();
-                };
+                reader.onload = (e) => { parseRegistryCsv(e.target.result); resolve(); };
                 reader.readAsText(file, 'windows-1250');
             };
             input.click();
@@ -994,58 +607,36 @@
 
     function parseRegistryCsv(text) {
         const lines = text.split('\n').filter(l => l.trim());
-        if (lines.length < 2) {
-            showAlert('setupAlerts', 'Registry CSV appears empty.', 'warning');
-            return;
-        }
-
-        // Parse header
+        if (lines.length < 2) { showAlert('setupAlerts', 'Registry CSV appears empty.', 'warning'); return; }
         const header = lines[0].split(';').map(h => h.trim().replace(/^#/, ''));
         const colIndex = {};
         header.forEach((h, i) => colIndex[h.toLowerCase()] = i);
-
-        // Required columns
-        const col = (row, name) => {
-            const idx = colIndex[name];
-            return idx !== undefined ? (row[idx] || '').trim() : '';
-        };
+        const col = (row, name) => { const idx = colIndex[name]; return idx !== undefined ? (row[idx] || '').trim() : ''; };
 
         registry = [];
         for (let i = 1; i < lines.length; i++) {
             const row = lines[i].split(';');
             if (row.length < 5) continue;
-
             const rgc = col(row, 'rgc');
             if (!rgc) continue;
-
             registry.push({
-                rgc,
-                surname: col(row, 'prijmeni'),
-                givenName: col(row, 'jmeno'),
-                year: col(row, 'datum narozeni'),
-                gender: col(row, 'pohlavi'),
+                rgc, surname: col(row, 'prijmeni'), givenName: col(row, 'jmeno'),
+                year: col(row, 'datum narozeni'), gender: col(row, 'pohlavi'),
                 vk: col(row, 'vk'),
-                ks: col(row, 'ks'),
-                c1s: col(row, 'c1s'),
-                c2s: col(row, 'c2s'),
-                kw: col(row, 'kw'),
-                c1w: col(row, 'c1w'),
-                c2w: col(row, 'c2w'),
-                clubCode: col(row, 'oddil'),
-                clubName: col(row, 'odd_nazev'),
+                ks: col(row, 'ks'), c1s: col(row, 'c1s'), c2s: col(row, 'c2s'),
+                kw: col(row, 'kw'), c1w: col(row, 'c1w'), c2w: col(row, 'c2w'),
+                clubCode: col(row, 'oddil'), clubName: col(row, 'odd_nazev'),
             });
         }
 
-        // Store in localStorage (only needed columns, already UTF-8)
         try {
             const dateStr = new Date().toISOString().slice(0, 10);
             localStorage.setItem(REGISTRY_KEY, JSON.stringify(registry));
             localStorage.setItem(REGISTRY_DATE_KEY, dateStr);
             updateRegistryStatus(dateStr);
         } catch (e) {
-            showAlert('setupAlerts', `Registry too large for localStorage (${registry.length} entries). Search will work but won't persist.`, 'warning');
+            showAlert('setupAlerts', `Registry too large for localStorage. Search works but won't persist.`, 'warning');
         }
-
         showAlert('setupAlerts', `Registry loaded: ${registry.length} competitors`, 'info');
     }
 
@@ -1063,99 +654,45 @@
 
     function getRankingForClass(regEntry, classId) {
         if (!regEntry || !classId) return '';
-        const cid = classId.toUpperCase();
-        // Determine boat type and gender from classId
         const isFemale = regEntry.gender === 'f';
-
+        const cid = classId.toUpperCase();
         if (cid.includes('C2')) return isFemale ? regEntry.c2w : regEntry.c2s;
         if (cid.includes('C1')) return isFemale ? regEntry.c1w : regEntry.c1s;
-        // K1 is default
         return isFemale ? regEntry.kw : regEntry.ks;
     }
 
     // =========================================================================
-    // CATEGORY AUTO-CALCULATION
+    // CATEGORY AUTO-CALC
     // =========================================================================
     function calculateCategory(birthYear, classId) {
         if (!birthYear || !classId) return { catId: '', hint: '' };
-
         const cls = classes.find(c => c.classId === classId);
-        if (!cls || cls.categories.length === 0) return { catId: '', hint: 'No categories for this class' };
-
+        if (!cls || cls.categories.length === 0) return { catId: '', hint: 'No categories' };
         const year = parseInt(birthYear);
         if (isNaN(year)) return { catId: '', hint: 'Invalid year' };
-
-        // Categories use relative years (age-like) or absolute birth years
-        // Detect: if firstYear/lastYear are small numbers (<100), they're ages/relative
-        // If large (>1900), they're absolute years
-        // In sample data they appear to be age-related numbers like 11, 12, 13, 14
-        // The current year determines the mapping
-
-        const currentYear = new Date().getFullYear();
-        const age = currentYear - year;
-
-        let match = null;
+        const age = new Date().getFullYear() - year;
         for (const cat of cls.categories) {
-            if (cat.firstYear <= age && age <= cat.lastYear) {
-                match = cat;
-                break;
-            }
-            // Also try reversed (if lastYear < firstYear)
-            if (cat.lastYear <= age && age <= cat.firstYear) {
-                match = cat;
-                break;
-            }
+            const lo = Math.min(cat.firstYear, cat.lastYear);
+            const hi = Math.max(cat.firstYear, cat.lastYear);
+            if (lo <= age && age <= hi) return { catId: cat.catId, hint: cat.category };
         }
-
-        if (match) {
-            return { catId: match.catId, hint: match.category };
-        }
-
-        return { catId: '', hint: `Age ${age} outside all categories (${cls.categories.map(c => c.catId + ':' + c.firstYear + '-' + c.lastYear).join(', ')})` };
+        return { catId: '', hint: `Age ${age} outside categories` };
     }
 
     // =========================================================================
-    // BIB SUGGESTION
+    // BIB / ID
     // =========================================================================
     function suggestBib(classId) {
         if (!classId) return '';
-        // Find max bib in the selected class
-        const classParticipants = participants.filter(p => p.classId === classId);
-        if (classParticipants.length === 0) {
-            // No participants in this class yet, use 1
-            return '1';
-        }
-        const maxBib = Math.max(...classParticipants.map(p => parseInt(p.eventBib) || 0));
-        return String(maxBib + 1);
+        const classParts = participants.filter(p => p.classId === classId);
+        const addedParts = addedCompetitors.filter(a => a.classId === classId);
+        const allBibs = [...classParts.map(p => parseInt(p.eventBib)), ...addedParts.map(a => parseInt(a.eventBib))].filter(b => !isNaN(b));
+        if (allBibs.length === 0) return '1';
+        return String(Math.max(...allBibs) + 1);
     }
 
-    function getUsedBibs() {
-        return participants.map(p => parseInt(p.eventBib)).filter(b => !isNaN(b)).sort((a, b) => a - b);
-    }
-
-    function formatBibsRange(bibs) {
-        if (bibs.length === 0) return 'none';
-        const unique = [...new Set(bibs)].sort((a, b) => a - b);
-        const ranges = [];
-        let start = unique[0], end = unique[0];
-        for (let i = 1; i < unique.length; i++) {
-            if (unique[i] === end + 1) {
-                end = unique[i];
-            } else {
-                ranges.push(start === end ? String(start) : `${start}-${end}`);
-                start = end = unique[i];
-            }
-        }
-        ranges.push(start === end ? String(start) : `${start}-${end}`);
-        return ranges.join(', ');
-    }
-
-    // =========================================================================
-    // PARTICIPANT ID
-    // =========================================================================
     function generateParticipantId(rgc, classId) {
-        if (!rgc || !classId) return '';
-        return `${rgc}.${classId}`;
+        return (rgc && classId) ? `${rgc}.${classId}` : '';
     }
 
     // =========================================================================
@@ -1169,70 +706,65 @@
         const bib = document.getElementById('fBib').value.trim();
         const partId = document.getElementById('fId').value.trim();
 
-        // Blocking errors
         if (!rgc) msgs.push({ type: 'error', text: 'RGC is required' });
         if (!surname) msgs.push({ type: 'error', text: 'Surname is required' });
         if (!classId) msgs.push({ type: 'error', text: 'Class is required' });
         if (!bib) msgs.push({ type: 'error', text: 'EventBib is required' });
         else if (!/^\d+$/.test(bib)) msgs.push({ type: 'error', text: 'EventBib must be a positive integer' });
 
-        if (partId && participants.some(p => p.id === partId)) {
-            msgs.push({ type: 'error', text: `Participant Id "${partId}" already exists` });
-        }
-        // Also check addedCompetitors
-        if (partId && addedCompetitors.some(a => a.id === partId)) {
-            msgs.push({ type: 'error', text: `Participant Id "${partId}" already added in this session` });
+        // Id uniqueness: event-wide
+        if (partId) {
+            if (participants.some(p => p.id === partId) || addedCompetitors.some(a => a.id === partId)) {
+                msgs.push({ type: 'error', text: `Participant Id "${partId}" already exists` });
+            }
         }
 
+        // RGC+ClassId uniqueness
         if (rgc && classId) {
-            const existing = participants.find(p => p.icfId === rgc && p.classId === classId);
-            if (existing) {
-                msgs.push({ type: 'error', text: `RGC ${rgc} already registered in class ${classId} (${existing.familyName})` });
-            }
-            const addedExisting = addedCompetitors.find(a => a.icfId === rgc && a.classId === classId);
-            if (addedExisting) {
-                msgs.push({ type: 'error', text: `RGC ${rgc} already added to class ${classId} in this session` });
+            if (participants.some(p => p.icfId === rgc && p.classId === classId) ||
+                addedCompetitors.some(a => a.icfId === rgc && a.classId === classId)) {
+                msgs.push({ type: 'error', text: `RGC ${rgc} already in class ${classId}` });
             }
         }
 
-        // Warnings
-        if (bib && /^\d+$/.test(bib)) {
+        // Bib uniqueness: per-race (check only selected races)
+        if (bib && /^\d+$/.test(bib) && classId) {
             const bibNum = parseInt(bib);
-            const usedBy = participants.find(p => parseInt(p.eventBib) === bibNum);
-            if (usedBy) {
-                msgs.push({ type: 'warning', text: `Bib ${bib} already used by ${usedBy.familyName} ${usedBy.givenName} (${usedBy.classId})` });
-            }
-            const addedUsedBy = addedCompetitors.find(a => parseInt(a.eventBib) === bibNum);
-            if (addedUsedBy) {
-                msgs.push({ type: 'warning', text: `Bib ${bib} already assigned to ${addedUsedBy.surname} in this session` });
+            const checkedRaces = getCheckedRaces();
+            for (const race of checkedRaces) {
+                const raceResults = results.filter(r => r.raceId === race.raceId);
+                const conflict = raceResults.find(r => parseInt(r.bib) === bibNum);
+                if (conflict) {
+                    const part = participants.find(p => p.id === conflict.id);
+                    const name = part ? `${part.familyName} ${part.givenName}` : conflict.id;
+                    msgs.push({ type: 'warning', text: `Bib ${bib} already used in ${race.raceId} by ${name}` });
+                    break; // one warning is enough
+                }
+                // Also check added competitors for this race
+                const addedConflict = addedCompetitors.find(a =>
+                    parseInt(a.eventBib) === bibNum && a.startOrders && a.startOrders[race.raceId]);
+                if (addedConflict) {
+                    msgs.push({ type: 'warning', text: `Bib ${bib} already assigned in ${race.raceId} (this session)` });
+                    break;
+                }
             }
         }
 
         const year = document.getElementById('fYear').value.trim();
         const catHint = document.getElementById('fCatHint').textContent;
-        if (year && classId && catHint.includes('outside')) {
-            msgs.push({ type: 'warning', text: catHint });
-        }
+        if (year && classId && catHint.includes('outside')) msgs.push({ type: 'warning', text: catHint });
 
         const checkedRaces = getCheckedRaces();
-        if (checkedRaces.length === 0) {
-            msgs.push({ type: 'warning', text: 'No races selected — competitor will be added to Participants only' });
-        }
-
-        const racesWithResults = checkedRaces.filter(r => raceHasResults(r.raceStatus));
-        if (racesWithResults.length > 0) {
-            msgs.push({ type: 'warning', text: `Adding to ${racesWithResults.length} race(s) with existing results` });
-        }
+        if (checkedRaces.length === 0 && classId) msgs.push({ type: 'warning', text: 'No races selected' });
+        const withResults = checkedRaces.filter(r => raceHasResults(r.raceStatus));
+        if (withResults.length > 0) msgs.push({ type: 'warning', text: `Adding to ${withResults.length} race(s) with results` });
 
         return msgs;
     }
 
     function getCheckedRaces() {
-        const checkboxes = document.querySelectorAll('#raceList input[type="checkbox"]:checked');
-        return Array.from(checkboxes).map(cb => {
-            const raceId = cb.value;
-            return schedule.find(s => s.raceId === raceId);
-        }).filter(Boolean);
+        return Array.from(document.querySelectorAll('#raceList input[type="checkbox"]:checked'))
+            .map(cb => schedule.find(s => s.raceId === cb.value)).filter(Boolean);
     }
 
     // =========================================================================
@@ -1260,62 +792,41 @@
     }
 
     function buildResultXml(data, raceId) {
-        // Try to use template from existing Results for this race
         const templateFields = getResultTemplate(raceId);
-
-        const bib = data.eventBib;
-        const bibPadded = formatBibPadded(bib);
+        const bibPadded = formatBibPadded(data.eventBib);
         const maxOrder = getMaxStartOrder(raceId);
         const startOrder = maxOrder + 1;
 
-        // Build using template field order
         let xml = `\n  <Results>`;
         for (const field of templateFields) {
-            if (field === 'RaceId') {
-                xml += `\n    <RaceId>${xmlEscape(raceId)}</RaceId>`;
-            } else if (field === 'Id') {
-                xml += `\n    <Id>${xmlEscape(data.id)}</Id>`;
-            } else if (field === 'StartOrder') {
-                xml += `\n    <StartOrder>${startOrder}</StartOrder>`;
-            } else if (field === 'Bib') {
-                xml += `\n    <Bib>${bibPadded}</Bib>`;
-            } else if (field === 'CatId') {
-                xml += `\n    <CatId>${xmlEscape(data.catId)}</CatId>`;
-            } else if (field === 'StartTime') {
-                xml += `\n    <StartTime />`;
-            } else if (field === 'Status') {
-                xml += `\n    <Status />`;
-            } else if (['Selected', 'CheckListPrinted', 'CheckListCorrected', 'IsRanked', 'HasWildcard'].includes(field)) {
+            if (field === 'RaceId') xml += `\n    <RaceId>${xmlEscape(raceId)}</RaceId>`;
+            else if (field === 'Id') xml += `\n    <Id>${xmlEscape(data.id)}</Id>`;
+            else if (field === 'StartOrder') xml += `\n    <StartOrder>${startOrder}</StartOrder>`;
+            else if (field === 'Bib') xml += `\n    <Bib>${bibPadded}</Bib>`;
+            else if (field === 'CatId') xml += `\n    <CatId>${xmlEscape(data.catId)}</CatId>`;
+            else if (field === 'StartTime') xml += `\n    <StartTime />`;
+            else if (field === 'Status') xml += `\n    <Status />`;
+            else if (['Selected', 'CheckListPrinted', 'CheckListCorrected', 'IsRanked', 'HasWildcard'].includes(field))
                 xml += `\n    <${field}>false</${field}>`;
-            } else if (['Time', 'Pen', 'Total', 'TotalBehind', 'Rnk', 'RnkOrder', 'CatRnk', 'CatRnkOrder',
-                         'TieBreaker', 'ExtraStartInt', 'CheckListPrintIndex', 'BetterRunNr', 'HeatNr',
-                         'LastCleanGate', 'NrFLT', 'PrevTime', 'PrevPen', 'PrevTotal', 'PrevRnk', 'PrevRnkOrder',
-                         'PrevCatRnk', 'PrevCatRnkOrder', 'TotalTotal', 'TotalTotalBehind', 'TotalRnk',
-                         'TotalRnkOrder', 'TotalCatRnk', 'TotalCatRnkOrder', 'RankingPoints'].includes(field)) {
+            else if (['Time', 'Pen', 'Total', 'TotalBehind', 'Rnk', 'RnkOrder', 'CatRnk', 'CatRnkOrder',
+                       'TieBreaker', 'ExtraStartInt', 'CheckListPrintIndex', 'BetterRunNr', 'HeatNr',
+                       'LastCleanGate', 'NrFLT', 'PrevTime', 'PrevPen', 'PrevTotal', 'PrevRnk', 'PrevRnkOrder',
+                       'PrevCatRnk', 'PrevCatRnkOrder', 'TotalTotal', 'TotalTotalBehind', 'TotalRnk',
+                       'TotalRnkOrder', 'TotalCatRnk', 'TotalCatRnkOrder', 'RankingPoints'].includes(field))
                 xml += `\n    <${field}>0</${field}>`;
-            } else {
-                xml += `\n    <${field} />`;
-            }
+            else xml += `\n    <${field} />`;
         }
         xml += `\n  </Results>`;
         return { xml, startOrder };
     }
 
     function getResultTemplate(raceId) {
-        // Find first existing Results element for this race in the DOM
-        const resNodes = xmlDoc.getElementsByTagNameNS(NS, 'Results');
-        for (const r of resNodes) {
+        for (const r of xmlDoc.getElementsByTagNameNS(NS, 'Results')) {
             if (getTextContent(r, 'RaceId') === raceId) {
-                // Extract child element names in order
-                const fields = [];
-                for (const child of r.children) {
-                    fields.push(child.localName || child.tagName);
-                }
-                return fields;
+                return Array.from(r.children).map(ch => ch.localName || ch.tagName);
             }
         }
-
-        // Fallback: hardcoded BR1 template
+        // Fallback BR1 template
         return ['RaceId', 'Id', 'StartOrder', 'Bib', 'StartTime', 'Status',
                 'dtStart', 'dtFinish', 'Time', 'Gates', 'GateTimes', 'Pen', 'Total',
                 'TotalBehind', 'Rnk', 'RnkOrder', 'CatRnk', 'CatRnkOrder', 'CatId',
@@ -1326,59 +837,30 @@
 
     function getMaxStartOrder(raceId) {
         let max = 0;
-        // Check parsed results
-        for (const r of results) {
-            if (r.raceId === raceId && r.startOrder > max) max = r.startOrder;
-        }
-        // Check already added in this session
-        for (const a of addedCompetitors) {
-            if (a.startOrders && a.startOrders[raceId] && a.startOrders[raceId] > max) {
-                max = a.startOrders[raceId];
-            }
-        }
+        for (const r of results) { if (r.raceId === raceId && r.startOrder > max) max = r.startOrder; }
+        for (const a of addedCompetitors) { if (a.startOrders?.[raceId] > max) max = a.startOrders[raceId]; }
         return max;
     }
 
     function formatBibPadded(bib) {
-        // Detect padding width from existing results
         let maxWidth = 4;
-        for (const r of results) {
-            if (r.bib && r.bib.length > maxWidth) maxWidth = r.bib.length;
-        }
+        for (const r of results) { if (r.bib && r.bib.length > maxWidth) maxWidth = r.bib.length; }
         return String(bib).padStart(maxWidth, ' ');
     }
 
     function insertIntoXml(participantXml, resultXmls) {
-        // Find insertion point for Participant
-        // Insert before first <Classes> tag
-        let partInsertPos = xmlString.indexOf('<Classes>');
-        if (partInsertPos === -1) {
-            // Try before <Schedule>
-            partInsertPos = xmlString.indexOf('<Schedule>');
-        }
-        if (partInsertPos === -1) {
-            showAlert('setupAlerts', 'Cannot find insertion point for Participant', 'error');
-            return false;
-        }
+        // Insert participant before <Classes>
+        let partPos = xmlString.indexOf('<Classes>');
+        if (partPos === -1) partPos = xmlString.indexOf('<Schedule>');
+        if (partPos === -1) { showAlert('setupAlerts', 'Cannot find Participant insertion point', 'error'); return false; }
+        xmlString = xmlString.slice(0, partPos) + participantXml + '\n  ' + xmlString.slice(partPos);
 
-        // Insert participant before <Classes> (at end of Participants section)
-        xmlString = xmlString.slice(0, partInsertPos) + participantXml + '\n  ' + xmlString.slice(partInsertPos);
-
-        // Find insertion point for Results
-        // Insert before <CourseData> or <Events> or </Canoe123Data>
-        let resInsertPos = xmlString.indexOf('<CourseData>');
-        if (resInsertPos === -1) resInsertPos = xmlString.indexOf('<Events>');
-        if (resInsertPos === -1) resInsertPos = xmlString.indexOf('</Canoe123Data>');
-
-        if (resInsertPos === -1) {
-            showAlert('setupAlerts', 'Cannot find insertion point for Results', 'error');
-            return false;
-        }
-
-        // Insert all result entries
-        const allResultsXml = resultXmls.join('');
-        xmlString = xmlString.slice(0, resInsertPos) + allResultsXml + '\n  ' + xmlString.slice(resInsertPos);
-
+        // Insert results before <CourseData> or <Events> or </Canoe123Data>
+        let resPos = xmlString.indexOf('<CourseData>');
+        if (resPos === -1) resPos = xmlString.indexOf('<Events>');
+        if (resPos === -1) resPos = xmlString.indexOf('</Canoe123Data>');
+        if (resPos === -1) { showAlert('setupAlerts', 'Cannot find Results insertion point', 'error'); return false; }
+        xmlString = xmlString.slice(0, resPos) + resultXmls.join('') + '\n  ' + xmlString.slice(resPos);
         return true;
     }
 
@@ -1388,7 +870,6 @@
     function addCompetitor() {
         const msgs = validate();
         renderValidation(msgs);
-
         if (msgs.some(m => m.type === 'error')) return;
 
         const data = {
@@ -1408,7 +889,6 @@
         const checkedRaces = getCheckedRaces();
         const resultXmls = [];
         const startOrders = {};
-
         for (const race of checkedRaces) {
             const { xml, startOrder } = buildResultXml(data, race.raceId);
             resultXmls.push(xml);
@@ -1417,65 +897,115 @@
 
         if (!insertIntoXml(participantXml, resultXmls)) return;
 
-        // Re-parse XML
-        const parser = new DOMParser();
-        xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+        // Re-parse
+        xmlDoc = new DOMParser().parseFromString(xmlString, 'text/xml');
         extractData();
 
-        // Track addition
-        addedCompetitors.push({
-            ...data,
-            surname: data.familyName,
-            startOrders,
-            racesCount: checkedRaces.length,
-        });
-
+        addedCompetitors.push({ ...data, surname: data.familyName, startOrders, racesCount: checkedRaces.length });
         changesSinceSave++;
         updateStatusBar();
         renderAddedLog();
-        updateClassDependentUI();
+        renderStartlist();
+        runValidation();
 
         showAlert('setupAlerts',
-            `Added: ${data.familyName} ${data.givenName} (${data.icfId}) → ${data.classId}, Bib ${data.eventBib}, ${checkedRaces.length} race(s)`,
-            'info');
+            `Added: ${data.familyName} ${data.givenName} (${data.icfId}) \u2192 ${data.classId}, Bib ${data.eventBib}, ${checkedRaces.length} race(s)`, 'info');
     }
 
     // =========================================================================
-    // UI UPDATES
+    // STARTLIST TABLE (right panel)
+    // =========================================================================
+    function renderStartlist() {
+        const classId = document.getElementById('fClass').value;
+        const container = document.getElementById('startlistScroll');
+        const titleEl = document.getElementById('startlistClassName');
+
+        if (!classId) {
+            container.innerHTML = '<div class="startlist-empty">Select a class to view startlist</div>';
+            titleEl.textContent = 'select class';
+            return;
+        }
+
+        const cls = classes.find(c => c.classId === classId);
+        titleEl.textContent = cls ? `${cls.classId} \u2014 ${cls.className || cls.longTitle || ''}` : classId;
+
+        // Races for this class
+        const classRaces = schedule.filter(s => s.classId === classId);
+
+        // Participants in this class (from XML + added)
+        const classParts = participants.filter(p => p.classId === classId);
+
+        if (classParts.length === 0) {
+            container.innerHTML = '<div class="startlist-empty">No participants in this class</div>';
+            return;
+        }
+
+        // Build table
+        let html = '<table class="startlist-table"><thead><tr>';
+        html += '<th>Bib</th><th>Name</th><th>Club</th><th>Year</th>';
+        for (const race of classRaces) {
+            html += `<th class="race-col" title="${race.raceId}">${race.disId}</th>`;
+        }
+        html += '</tr></thead><tbody>';
+
+        // Sort by EventBib
+        const sorted = [...classParts].sort((a, b) => (parseInt(a.eventBib) || 999) - (parseInt(b.eventBib) || 999));
+
+        // Set of added IDs for highlighting
+        const addedIds = new Set(addedCompetitors.map(a => a.id));
+
+        for (const p of sorted) {
+            const isNew = addedIds.has(p.id);
+            html += `<tr class="${isNew ? 'newly-added' : ''}">`;
+            html += `<td>${xmlEscape(p.eventBib)}</td>`;
+            html += `<td>${xmlEscape(p.familyName)} ${xmlEscape(p.givenName)}</td>`;
+            html += `<td>${xmlEscape(p.club)}</td>`;
+            html += `<td>${xmlEscape(p.year)}</td>`;
+
+            for (const race of classRaces) {
+                const inRace = results.some(r => r.raceId === race.raceId && r.id === p.id);
+                html += `<td class="${inRace ? 'race-check' : 'race-nocheck'}">${inRace ? '\u2713' : '\u00B7'}</td>`;
+            }
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+
+        // Scroll to newly added
+        const newRow = container.querySelector('tr.newly-added:last-of-type');
+        if (newRow) newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // =========================================================================
+    // UI
     // =========================================================================
     function updateUI() {
-        // Show summary
-        document.getElementById('xmlSummary').classList.remove('hidden');
-        document.getElementById('sumParticipants').textContent = participants.length;
-        document.getElementById('sumClasses').textContent = classes.length;
-        document.getElementById('sumRaces').textContent = schedule.length;
-        document.getElementById('sumResults').textContent = results.length;
-
-        // Show editor
         document.getElementById('editorSection').classList.remove('hidden');
         document.getElementById('statusBar').classList.remove('hidden');
 
-        // Populate class selector
         const classSelect = document.getElementById('fClass');
+        const currentVal = classSelect.value;
         classSelect.innerHTML = '<option value="">-- select class --</option>';
         for (const c of classes) {
-            if (c.classId === 'NA') continue; // Skip proxy class
+            if (c.classId === 'NA') continue;
             const opt = document.createElement('option');
             opt.value = c.classId;
-            opt.textContent = `${c.classId} — ${c.className || c.longTitle || ''}`;
+            opt.textContent = `${c.classId} \u2014 ${c.className || c.longTitle || ''}`;
             classSelect.appendChild(opt);
         }
+        if (currentVal) classSelect.value = currentVal;
 
         updateStatusBar();
         document.getElementById('headerFileInfo').textContent = fileName;
+        updateClassDependentUI();
     }
 
     function updateStatusBar() {
         document.getElementById('fileStatus').textContent = fileName ? `File: ${fileName}` : '';
-
         const badge = document.getElementById('changesBadge');
         if (changesSinceSave > 0) {
-            badge.textContent = `${changesSinceSave} unsaved change${changesSinceSave > 1 ? 's' : ''}`;
+            badge.textContent = `${changesSinceSave} unsaved`;
             badge.className = 'status-badge modified';
             badge.classList.remove('hidden');
             document.getElementById('btnSave').disabled = false;
@@ -1488,57 +1018,48 @@
             badge.classList.add('hidden');
             document.getElementById('btnSave').disabled = true;
         }
-
-        document.getElementById('btnRevert').disabled = !backupCreated;
+        document.getElementById('btnRevert').disabled = !fileHandle;
     }
 
     function updateRegistryStatus(dateStr) {
         const el = document.getElementById('registryStatus');
-        if (!el) return;
-
-        if (registry.length === 0) {
-            el.innerHTML = '';
-            return;
-        }
-
+        if (!el || registry.length === 0) { if (el) el.innerHTML = ''; return; }
         const daysSince = dateStr ? Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000) : null;
         const stale = daysSince !== null && daysSince > 30;
-
         el.innerHTML = `<span class="status-badge ${stale ? 'registry-stale' : 'registry'}">
-            Registry: ${registry.length} competitors${dateStr ? ` (${dateStr})` : ''}
-            ${stale ? ' — STALE' : ''}
-        </span>`;
+            Registry: ${registry.length}${dateStr ? ` (${dateStr})` : ''}${stale ? ' STALE' : ''}</span>`;
     }
 
     function updateClassDependentUI() {
         const classId = document.getElementById('fClass').value;
+        const raceListEl = document.getElementById('raceList');
+
         if (!classId) {
-            document.getElementById('raceList').innerHTML = '<li style="color: var(--color-text-muted);">Select a class first</li>';
-            document.getElementById('fBib').value = '';
-            document.getElementById('fId').value = '';
+            raceListEl.innerHTML = '<li style="color: var(--color-text-muted);">Select a class first</li>';
             document.getElementById('fBibHint').textContent = '';
-            document.getElementById('fIdHint').textContent = '';
+            renderStartlist();
             return;
         }
 
         // Suggest bib
-        const sugBib = suggestBib(classId);
         if (!document.getElementById('fBib').value) {
-            document.getElementById('fBib').value = sugBib;
+            document.getElementById('fBib').value = suggestBib(classId);
         }
 
-        // Show used bibs
-        const usedBibs = getUsedBibs();
-        document.getElementById('fBibHint').textContent = `Used: ${formatBibsRange(usedBibs)}`;
+        // Bib hint: show used bibs in this class
+        const classBibs = participants.filter(p => p.classId === classId)
+            .map(p => parseInt(p.eventBib)).filter(b => !isNaN(b)).sort((a, b) => a - b);
+        const addedBibs = addedCompetitors.filter(a => a.classId === classId)
+            .map(a => parseInt(a.eventBib)).filter(b => !isNaN(b));
+        const allBibs = [...classBibs, ...addedBibs].sort((a, b) => a - b);
+        document.getElementById('fBibHint').textContent = allBibs.length > 0
+            ? `Used in class: ${formatBibsRange(allBibs)}` : '';
 
         // Generate Id
         const rgc = document.getElementById('fRgc').value.trim();
-        if (rgc) {
-            const genId = generateParticipantId(rgc, classId);
-            document.getElementById('fId').value = genId;
-        }
+        if (rgc) document.getElementById('fId').value = generateParticipantId(rgc, classId);
 
-        // Auto-calculate category
+        // Category
         const year = document.getElementById('fYear').value.trim();
         if (year) {
             const { catId, hint } = calculateCategory(year, classId);
@@ -1546,49 +1067,56 @@
             document.getElementById('fCatHint').textContent = hint;
         }
 
-        // Update ranking based on class
-        const rgcVal = document.getElementById('fRgc').value.trim();
-        if (rgcVal) {
-            const regEntry = registry.find(r => r.rgc === rgcVal);
-            if (regEntry) {
-                const ranking = getRankingForClass(regEntry, classId);
-                document.getElementById('fRanking').value = ranking || '';
-            }
+        // Ranking
+        if (rgc) {
+            const regEntry = registry.find(r => r.rgc === rgc);
+            if (regEntry) document.getElementById('fRanking').value = getRankingForClass(regEntry, classId) || '';
         }
 
         // Races
         const classRaces = schedule.filter(s => s.classId === classId);
-        const raceListEl = document.getElementById('raceList');
         raceListEl.innerHTML = '';
-
         if (classRaces.length === 0) {
             raceListEl.innerHTML = '<li style="color: var(--color-text-muted);">No races for this class</li>';
-            return;
+        } else {
+            for (const race of classRaces) {
+                const hasRes = raceHasResults(race.raceStatus);
+                const li = document.createElement('li');
+                if (hasRes) li.classList.add('race-has-results');
+                const cb = document.createElement('input');
+                cb.type = 'checkbox'; cb.value = race.raceId;
+                cb.checked = !hasRes && !events.startListsLocked;
+                cb.addEventListener('change', runValidation);
+                const label = document.createElement('span');
+                label.textContent = `${race.raceId} (${race.disId})`;
+                const badge = document.createElement('span');
+                badge.className = `race-status-badge race-status-${race.raceStatus}`;
+                badge.textContent = RACE_STATUS_LABELS[race.raceStatus] || race.raceStatus;
+                li.append(cb, document.createTextNode(' '), label, document.createTextNode(' '), badge);
+                raceListEl.appendChild(li);
+            }
         }
 
-        for (const race of classRaces) {
-            const hasRes = raceHasResults(race.raceStatus);
-            const li = document.createElement('li');
-            if (hasRes) li.classList.add('race-has-results');
+        renderStartlist();
+        runValidation();
+    }
 
-            const cb = document.createElement('input');
-            cb.type = 'checkbox';
-            cb.value = race.raceId;
-            cb.checked = !hasRes && !events.startListsLocked;
-
-            const label = document.createElement('span');
-            label.textContent = `${race.raceId} (${race.disId})`;
-
-            const statusSpan = document.createElement('span');
-            statusSpan.className = `race-status-badge race-status-${race.raceStatus}`;
-            statusSpan.textContent = RACE_STATUS_LABELS[race.raceStatus] || race.raceStatus;
-
-            li.appendChild(cb);
-            li.appendChild(label);
-            li.appendChild(document.createTextNode(' '));
-            li.appendChild(statusSpan);
-            raceListEl.appendChild(li);
+    function formatBibsRange(bibs) {
+        const unique = [...new Set(bibs)].sort((a, b) => a - b);
+        if (unique.length === 0) return 'none';
+        const ranges = [];
+        let start = unique[0], end = unique[0];
+        for (let i = 1; i < unique.length; i++) {
+            if (unique[i] === end + 1) { end = unique[i]; }
+            else { ranges.push(start === end ? String(start) : `${start}-${end}`); start = end = unique[i]; }
         }
+        ranges.push(start === end ? String(start) : `${start}-${end}`);
+        return ranges.join(', ');
+    }
+
+    function runValidation() {
+        const msgs = validate();
+        renderValidation(msgs);
     }
 
     function renderValidation(msgs) {
@@ -1600,25 +1128,21 @@
             div.textContent = (msg.type === 'error' ? '\u2718 ' : '\u26A0 ') + msg.text;
             container.appendChild(div);
         }
-
-        const hasErrors = msgs.some(m => m.type === 'error');
-        document.getElementById('btnAdd').disabled = hasErrors;
+        document.getElementById('btnAdd').disabled = msgs.some(m => m.type === 'error');
     }
 
     function renderAddedLog() {
         const container = document.getElementById('addedLog');
         container.innerHTML = '';
         if (addedCompetitors.length === 0) return;
-
         const header = document.createElement('div');
-        header.style.cssText = 'font-weight: 600; margin-bottom: 4px; color: var(--color-text-secondary);';
-        header.textContent = `Added in this session (${addedCompetitors.length}):`;
+        header.style.cssText = 'font-weight: 600; margin-bottom: 4px; color: var(--color-text-secondary); font-size: 11px; text-transform: uppercase;';
+        header.textContent = `Added (${addedCompetitors.length}):`;
         container.appendChild(header);
-
         for (const a of addedCompetitors) {
             const div = document.createElement('div');
             div.className = 'added-log-item';
-            div.innerHTML = `<span>${a.familyName} ${a.givenName} → ${a.classId}, Bib ${a.eventBib}</span>
+            div.innerHTML = `<span>${xmlEscape(a.familyName)} ${xmlEscape(a.givenName)} \u2192 ${xmlEscape(a.classId)}, Bib ${xmlEscape(a.eventBib)}</span>
                              <span>${a.racesCount} race(s)</span>`;
             container.appendChild(div);
         }
@@ -1642,29 +1166,19 @@
         document.getElementById('fClub').value = entry.clubName || entry.clubCode || '';
         document.getElementById('searchResults').innerHTML = '';
         document.getElementById('searchInput').value = `${entry.surname} ${entry.givenName}`;
-
-        // Trigger class-dependent updates if class already selected
         updateClassDependentUI();
     }
 
     function resetForm() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('searchResults').innerHTML = '';
-        document.getElementById('fRgc').value = '';
-        document.getElementById('fSurname').value = '';
-        document.getElementById('fGivenName').value = '';
-        document.getElementById('fYear').value = '';
+        for (const id of ['searchInput', 'fRgc', 'fSurname', 'fGivenName', 'fYear', 'fClub', 'fRanking', 'fCatId', 'fBib', 'fId']) {
+            document.getElementById(id).value = '';
+        }
         document.getElementById('fGender').value = 't';
-        document.getElementById('fClub').value = '';
-        document.getElementById('fRanking').value = '';
-        document.getElementById('fCatId').value = '';
         document.getElementById('fCatHint').textContent = '';
-        document.getElementById('fBib').value = '';
-        document.getElementById('fId').value = '';
-        document.getElementById('fClass').value = '';
+        document.getElementById('searchResults').innerHTML = '';
         document.getElementById('validationMessages').innerHTML = '';
         document.getElementById('btnAdd').disabled = true;
-        updateClassDependentUI();
+        // Keep class selection
     }
 
     // =========================================================================
@@ -1677,12 +1191,11 @@
     document.getElementById('btnAdd').addEventListener('click', addCompetitor);
     document.getElementById('btnReset').addEventListener('click', resetForm);
 
-    // Search input
     document.getElementById('searchInput').addEventListener('input', function() {
-        const results = searchRegistry(this.value);
+        const res = searchRegistry(this.value);
         const container = document.getElementById('searchResults');
         container.innerHTML = '';
-        for (const r of results) {
+        for (const r of res) {
             const div = document.createElement('div');
             div.className = 'search-result-item';
             div.innerHTML = `<span class="name">${xmlEscape(r.surname)} ${xmlEscape(r.givenName)}</span>
@@ -1692,29 +1205,21 @@
         }
     });
 
-    // Class change
     document.getElementById('fClass').addEventListener('change', function() {
-        document.getElementById('fBib').value = ''; // Reset bib to get new suggestion
+        document.getElementById('fBib').value = '';
         updateClassDependentUI();
     });
 
-    // Auto-validate on input changes
-    for (const id of ['fRgc', 'fSurname', 'fBib', 'fId', 'fYear']) {
-        document.getElementById(id).addEventListener('input', () => {
-            const msgs = validate();
-            renderValidation(msgs);
-        });
+    // Validate on any form input change
+    for (const id of ['fRgc', 'fSurname', 'fBib', 'fId', 'fYear', 'fGivenName', 'fClub']) {
+        document.getElementById(id).addEventListener('input', runValidation);
     }
 
-    // RGC change → update Id
     document.getElementById('fRgc').addEventListener('input', function() {
         const classId = document.getElementById('fClass').value;
-        if (classId) {
-            document.getElementById('fId').value = generateParticipantId(this.value.trim(), classId);
-        }
+        if (classId) document.getElementById('fId').value = generateParticipantId(this.value.trim(), classId);
     });
 
-    // Year change → update category
     document.getElementById('fYear').addEventListener('input', function() {
         const classId = document.getElementById('fClass').value;
         if (classId) {
@@ -1724,23 +1229,15 @@
         }
     });
 
-    // beforeunload warning
     window.addEventListener('beforeunload', function(e) {
-        if (changesSinceSave > 0) {
-            e.preventDefault();
-            e.returnValue = '';
-        }
+        if (changesSinceSave > 0) { e.preventDefault(); e.returnValue = ''; }
     });
 
-    // File System API note
     if (!hasFileSystemAccess) {
-        document.getElementById('fsApiNote').textContent =
-            'File System Access API not available. Files will be downloaded instead of saved in place.';
+        document.getElementById('fsApiNote').textContent = 'File System Access API not available. Files will be downloaded instead of saved in place.';
     }
 
-    // Load registry from localStorage on startup
     loadRegistryFromStorage();
-
     </script>
 </body>
 </html>
