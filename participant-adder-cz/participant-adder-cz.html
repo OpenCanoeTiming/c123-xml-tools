@@ -376,7 +376,7 @@
     const REGISTRY_DATE_KEY = 'participant-adder-registry-date';
 
     let xmlString = '';
-    let xmlOriginal = '';       // Original XML at time of open (for revert)
+    let xmlHistory = [];        // Stack of saved XML states (for undo)
     let xmlDoc = null;
     let fileHandle = null;
     let changesSinceSave = 0;
@@ -438,7 +438,7 @@
                 });
             }
             if (xmlString) {
-                xmlOriginal = xmlString;  // Store original for revert
+                xmlHistory = [xmlString];  // Reset stack with original
                 addedCompetitors = [];
                 changesSinceSave = 0;
                 processXml();
@@ -463,7 +463,7 @@
                 URL.revokeObjectURL(url);
             }
             changesSinceSave = 0;
-            xmlOriginal = xmlString;  // New baseline after save
+            xmlHistory.push(xmlString);  // Push saved state onto stack
             addedCompetitors = [];
             updateStatusBar();
             renderAddedLog();
@@ -474,13 +474,33 @@
     }
 
     function revertChanges() {
-        if (!xmlOriginal) return;
-        if (!confirm('Revert all unsaved changes?')) return;
-        xmlString = xmlOriginal;
+        if (xmlHistory.length === 0) return;
+
+        if (changesSinceSave > 0) {
+            // Unsaved changes exist — revert to current baseline (top of stack)
+            if (!confirm('Discard unsaved changes?')) return;
+            xmlString = xmlHistory[xmlHistory.length - 1];
+        } else if (xmlHistory.length > 1) {
+            // No unsaved changes — undo last save (pop stack)
+            if (!confirm('Undo last save and revert to previous version?')) return;
+            xmlHistory.pop();
+            xmlString = xmlHistory[xmlHistory.length - 1];
+        } else {
+            return; // Only original state, nothing to undo
+        }
+
         changesSinceSave = 0;
         addedCompetitors = [];
         processXml();
-        showAlert('setupAlerts', 'Reverted to last saved state.', 'info');
+
+        // Also write reverted content to disk if possible
+        if (fileHandle) {
+            fileHandle.createWritable().then(w => { w.write(xmlString); return w.close(); }).catch(() => {});
+        }
+
+        const remaining = xmlHistory.length - 1;
+        showAlert('setupAlerts',
+            `Reverted.${remaining > 0 ? ` ${remaining} more undo step(s) available.` : ' At original file.'}`, 'info');
     }
 
     // =========================================================================
@@ -1048,7 +1068,8 @@
             badge.classList.add('hidden');
             document.getElementById('btnSave').disabled = true;
         }
-        document.getElementById('btnRevert').disabled = changesSinceSave === 0;
+        // Enable revert if: unsaved changes OR can undo a previous save
+        document.getElementById('btnRevert').disabled = changesSinceSave === 0 && xmlHistory.length <= 1;
     }
 
     function updateRegistryStatus(dateStr) {
