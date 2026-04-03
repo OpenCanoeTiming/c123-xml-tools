@@ -2,31 +2,13 @@
 
 ## Project
 
-C123 XML Tools - collection of simple tools for working with XML files from Siwidata's Canoe123 system.
+C123 XML Tools — collection of standalone browser-based tools for working with XML files from Siwidata's Canoe123 system.
 
-**GitHub:** OpenCanoeTiming/c123-xml-tools | **License:** MIT
-
----
-
-## Paths and Documentation
-
-| Purpose | Path |
-|---------|------|
-| **This project** | `/workspace/timing/c123-xml-tools/` |
-| **Protocol docs** | `../c123-protocol-docs/` |
-| **XML format** | `../c123-protocol-docs/c123-xml-format.md` |
+**GitHub:** OpenCanoeTiming/c123-xml-tools | **License:** MIT | **Status:** Stable
 
 ---
 
-## Language
-
-- User communication: **Czech**
-- Documentation (README, docs): **English**
-- Code, comments, commit messages: **English**
-
----
-
-## Structure
+## Architecture
 
 ```
 c123-xml-tools/
@@ -46,45 +28,74 @@ c123-xml-tools/
 
 ---
 
-## Tools
+## Key References
 
-### penalties-quality-analyzer
-Analyzes quality of entered penalties in C123 XML file.
-- Detects inconsistencies and errors
-- Standalone HTML - open in browser, drag & drop XML
-
-### race-combinator
-Combines multiple race XML files into one.
-- Merging results from multiple rounds/days
-- Standalone HTML - open in browser
-
-### participant-adder-cz
-Adds late-registered competitors to C123 XML.
-- Searches Czech canoe registry (CSV, Windows-1250)
-- Adds to Participants + Results (startlist) in one step
-- Direct file editing via File System Access API
-- Standalone HTML - open in browser
+| Purpose | Path |
+|---------|------|
+| **Protocol docs** | `../c123-protocol-docs/` |
+| **XML format** | `../c123-protocol-docs/c123-xml-format.md` |
+| **Design system** | `../timing-design-system/` |
 
 ---
 
-## Usage
+## Important Rules
 
-All tools are standalone HTML files:
-1. Open `.html` file in browser
-2. Drag & drop XML file(s) from Canoe123
-3. Download or copy result
+1. **Standalone HTML** — each tool is a single `.html` file, no build step, no dependencies
+2. **Drag & drop** — primary interaction pattern for loading XML files
+3. **Design system** — use `timing-design-system` CSS for styling (via `dist/timing.css`)
+
+---
+
+## Tools
+
+### penalties-quality-analyzer
+Analyzes quality of entered penalties in C123 XML file. Detects inconsistencies and errors.
+
+### race-combinator
+Combines multiple race XML files into one. For merging results from multiple rounds/days.
+
+### participant-adder-cz
+Adds late-registered competitors to C123 XML. Searches Czech canoe registry (CSV, Windows-1250). Direct file editing via File System Access API.
 
 ---
 
 ## Development
 
-Tools use vanilla JavaScript with no dependencies.
-For testing, just open HTML in browser.
+Tools use vanilla JavaScript with no dependencies. Open HTML in browser to test.
 
 ```bash
 # Local server (optional)
 npx serve .
 ```
+
+---
+
+## Workflow
+
+Issue-driven development. Every change starts with a GitHub issue.
+
+### 1. Rozbor (Analysis)
+- Comment on issue: restate problem, challenge the idea, define scope, identify risks
+
+### 2. Plan
+- Use Claude Code plan mode to design implementation
+- Get user confirmation before implementation
+
+### 3. Implement
+- Branch from main: `feat/{N}-{slug}` or `fix-{N}-{slug}`
+- Commit incrementally, push regularly
+
+### 4. PR & Review
+- Every issue → PR with `Closes #N`
+- Summarize what changed and why
+
+---
+
+## Language
+
+- User communication: **Czech**
+- Documentation (README, docs): **English**
+- Code, comments, commit messages: **English**
 
 ---
 
@@ -95,7 +106,3 @@ feat: add new validation rule for gate penalties
 fix: correct XML merge for overlapping runs
 docs: update race-combinator documentation
 ```
-
----
-
-*XML format reference → see `../c123-protocol-docs/c123-xml-format.md`*
