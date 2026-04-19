@@ -1311,12 +1311,12 @@
         function formatTime(timeInMs) {
             if (timeInMs === 999999) return 'N/A';
 
-            // Time is in milliseconds (e.g. 87660 = 87.66 seconds)
+            // Time is in milliseconds (e.g. 87660 = 87.660 seconds)
             const seconds = Math.floor(timeInMs / 1000);
             const milliseconds = timeInMs % 1000;
 
-            // Format seconds and milliseconds
-            return `${seconds}.${String(milliseconds).padStart(2, '0')}`;
+            // Format seconds and milliseconds (always 3 digits for ms)
+            return `${seconds}.${String(milliseconds).padStart(3, '0')}`;
         }
 
         function createResultTabs() {
