@@ -632,12 +632,6 @@
             });
         }
 
-        // Function to remove extension from ID
-        function normalizeId(id) {
-            // Remove everything after first dot (including dot)
-            return id.split('.')[0];
-        }
-
         function parseXML(xmlContent, fileName) {
             try {
                 const parser = new DOMParser();
@@ -650,11 +644,13 @@
                 }
 
                 // Process participants
+                // Keyed by full Id (e.g. "60070.C1M.ZS") — same ICFId in different
+                // classes must not collide, otherwise EventBib/ClassId leaks across categories.
                 xmlDoc.querySelectorAll('Participants').forEach(participant => {
-                    const id = normalizeId(participant.querySelector('Id')?.textContent);
+                    const id = participant.querySelector('Id')?.textContent;
                     if (id) {
                         parsedData.participants[id] = {
-                            id: normalizeId(id),
+                            id,
                             classId: participant.querySelector('ClassId')?.textContent,
                             eventBib: participant.querySelector('EventBib')?.textContent,
                             icfId: participant.querySelector('ICFId')?.textContent,
@@ -673,7 +669,7 @@
                 // Process results
                 xmlDoc.querySelectorAll('Results').forEach(result => {
                     const raceId = result.querySelector('RaceId')?.textContent;
-                    const id = normalizeId(result.querySelector('Id')?.textContent);
+                    const id = result.querySelector('Id')?.textContent;
 
                     if (raceId && id) {
                         if (!parsedData.results[raceId]) {
@@ -681,7 +677,7 @@
                         }
 
                         parsedData.results[raceId][id] = {
-                            id: normalizeId(id),
+                            id,
                             raceId: raceId,
                             startOrder: result.querySelector('StartOrder')?.textContent,
                             bib: result.querySelector('Bib')?.textContent,
