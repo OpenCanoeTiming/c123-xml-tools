@@ -36,3 +36,7 @@ dist-ssr
 .env.production.local
 # Core dumps
 core
+
+# Local per-session tool state (skills, agents) — never commit
+.claude/
+.superpowers/

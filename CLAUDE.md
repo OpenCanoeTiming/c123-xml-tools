@@ -8,6 +8,14 @@ C123 XML Tools — collection of standalone browser-based tools for working with
 
 ---
 
+## Rebuild 2026/27 — read first
+
+- **Design:** c123-server `docs/arch`; this repo is context, not a subject (TEST-ARCHITECTURE §8).
+- **Legacy line:** venues run tag `legacy-2026` of the deployables; this repo has no legacy line and is not touched by the rebuild.
+- **Git:** conventional commits; squash merges; `git add <file>`, never commit `.claude/` or `.superpowers/`. Czech with the maintainer, English in code, commits and docs.
+
+---
+
 ## Architecture
 
 ```
@@ -22,6 +30,7 @@ c123-xml-tools/
 ├── participant-adder-cz/
 │   ├── participant-adder-cz.html         # Standalone HTML tool
 │   └── readme.md                         # Documentation
+├── index.html                            # Landing page (GitHub Pages)
 ├── LICENSE
 └── README.md
 ```
@@ -40,9 +49,9 @@ c123-xml-tools/
 
 ## Important Rules
 
-1. **Standalone HTML** — each tool is a single `.html` file, no build step, no dependencies
+1. **Standalone HTML** — each tool is a single `.html` file, no build step; the only external resources are the design system CSS and the Inter web font (Google Fonts)
 2. **Drag & drop** — primary interaction pattern for loading XML files
-3. **Design system** — use `timing-design-system` CSS for styling (via `dist/timing.css`)
+3. **Design system** — load `timing.min.css` from the timing-design-system GitHub Pages build
 
 ---
 
@@ -88,6 +97,8 @@ Issue-driven development. Every change starts with a GitHub issue.
 ### 4. PR & Review
 - Every issue → PR with `Closes #N`
 - Summarize what changed and why
+- Squash merge; PR title keeps the conventional prefix
+- `git add <file>`, never `-A`; never commit `.claude/` or `.superpowers/`
 
 ---
 
