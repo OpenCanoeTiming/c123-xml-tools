@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Participant Adder CZ</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://opencanoetiming.github.io/timing-design-system/dist/timing.min.css">
+    <link rel="stylesheet" href="https://opencanoetiming.github.io/timing-design-system/v1/timing.min.css">
 
     <style>
         :root {
@@ -20,35 +17,6 @@
         * { box-sizing: border-box; }
         html { height: 100%; margin: 0; }
         body { margin: 0; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* Header */
-        .app-header {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 12px 16px 12px calc(16px + 4px + 12px);
-            background-color: var(--color-bg-surface, #141414);
-            min-height: 56px;
-        }
-        .app-header::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 4px;
-            background: var(--adder-accent);
-            box-shadow: 0 0 20px var(--adder-accent-glow);
-        }
-        .header-brand { display: flex; align-items: center; gap: 12px; }
-        .header-title { font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary, #fff); margin: 0; }
-        .header-status { display: flex; align-items: center; gap: 12px; }
-        .header-file-info { font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace; font-size: 13px; color: var(--color-text-secondary, #999); }
-        .badge-tool {
-            display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px;
-            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-            color: #fff; background-color: var(--adder-accent);
-        }
 
         /* Status bar */
         .status-bar {
@@ -250,8 +218,8 @@
             <h1 class="header-title">Participant Adder CZ</h1>
         </div>
         <div class="header-status">
-            <span class="header-file-info" id="headerFileInfo"></span>
-            <span class="badge-tool">Dohlasovac</span>
+            <span class="header-status-item header-port" id="headerFileInfo"></span>
+            <span class="badge badge-info">Dohlasovac</span>
         </div>
     </header>
 
