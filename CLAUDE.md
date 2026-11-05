@@ -49,9 +49,9 @@ c123-xml-tools/
 
 ## Important Rules
 
-1. **Standalone HTML** — each tool is a single `.html` file, no build step; the only external resources are the design system CSS and the Inter web font (Google Fonts)
+1. **Standalone HTML** — each tool is a single `.html` file, no build step; the only external resource is the design system CSS (it self-hosts Inter and JetBrains Mono — no Google Fonts)
 2. **Drag & drop** — primary interaction pattern for loading XML files
-3. **Design system** — load `timing.min.css` from the timing-design-system GitHub Pages build
+3. **Design system** — link the **pinned major**: `https://opencanoetiming.github.io/timing-design-system/v1/timing.min.css`. Never the unversioned `/dist/` URL (it is the frozen 0.9 line). Use DS components as they are — `app-header` + `badge-*` for the tool header, `col-num` / `col-time` / `col-bib` for numeric table columns — and keep page `<style>` to tool-specific layout; do not restyle DS classes. Light theme by default (no theme class; `prefers-color-scheme` applies).
 
 ---
 
